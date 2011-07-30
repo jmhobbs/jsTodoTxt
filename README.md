@@ -2,7 +2,7 @@
 
 jsTodoTxt is a library for working with todo.txt formatted files in JavaScript.
 
-# Usgae
+# Usage
 
 There are two ways to work with jsTodoTxt (hint: they overlap)
 
