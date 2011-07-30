@@ -1,0 +1,100 @@
+<html>
+	<head>
+		<title>jsTodoTxt Example</title>
+		<script src="jsTodoTxt-0.1.0.js"></script>
+		<style>
+			#content, #render { width: 600px; height: 300px; }
+			.priority, .location, .project {
+				padding: 0 3px;
+				margin: 0 5px;
+				border-radius: 5px;
+			}
+			.priority {
+				background: #777;
+				color: #FFF;
+			}
+			.project {
+				background: #00A;
+				color: #FFF;
+			}
+			.location {
+				background: #550;
+				color: #FFF;
+			}
+		</style>
+	</head>
+	<body>
+
+<textarea id="content">x 2011-06-12 (A) Bills and mail @Home
+Update freelancer profiles - eg: http://pick.im/john-hobbs @Computer
+(B) Fix bedroom Screen @Home
+Paint coop @Home +Chickens</textarea>
+
+		<p><button onclick="parse();">Parse</button></p>
+
+		<h2>Incomplete</h2>
+		<ul id="incomplete"></ul>
+
+		<h2>Complete</h2>
+		<ul id="complete"></ul>
+
+		<p><button onclick="render();">Render</button></p>
+
+<textarea id="render"></textarea>
+
+		<script>
+			
+			var items = [];
+
+			function parse () {
+				var contents = document.getElementById( 'content' ).value;
+				items = TodoTxt.parse( contents );
+
+				var $complete = document.getElementById( 'complete' );
+				var $incomplete = document.getElementById( 'incomplete' );
+
+				for( i in items ) {
+					var item = items[i];
+
+					var li = document.createElement( 'li' );
+					li.appendChild( document.createTextNode( item.text ) );
+
+					if( null != item.priority ) { 
+						var p = document.createElement( 'span' );
+						p.setAttribute( 'class', 'priority' );
+						p.appendChild( document.createTextNode( item.priority ) ); 
+						li.appendChild( p );
+					} 
+
+					if( null != item.project ) { 
+						var p = document.createElement( 'span' );
+						p.setAttribute( 'class', 'project' );
+						p.appendChild( document.createTextNode( item.project ) ); 
+						li.appendChild( p );
+					} 
+
+					if( null != item.location ) { 
+						var p = document.createElement( 'span' );
+						p.setAttribute( 'class', 'location' );
+						p.appendChild( document.createTextNode( item.location ) ); 
+						li.appendChild( p );
+					} 
+
+					if( item.complete ) {
+						$complete.appendChild( li );
+					}
+					else {
+						$incomplete.appendChild( li ); 
+					}
+
+				}
+			}
+
+			function render () {
+				document.getElementById( 'render' ).value = TodoTxt.render( items );
+			}
+
+		</script>
+
+	</body>
+</html>
