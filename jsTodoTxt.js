@@ -1,5 +1,5 @@
 /*!
- * jsTodoTxt Library v0.1.0
+ * jsTodoTxt Library v0.1.1
  * https://github.com/jmhobbs/jsTodoTxt
  *
  * Copyright 2011, John Hobbs
@@ -99,6 +99,14 @@ function TodoTxtItem ( line ) {
 	};
 
 	this.parse = function ( line ) {
+		// Reset everything
+		this.text     = null;
+		this.priority = null;
+		this.complete = false;
+		this.date     = null;
+		this.location = null;
+		this.project  = null;
+
 		// Trim whitespace
 		line = line.replace( TodoTxt._trim_re, '');
 
