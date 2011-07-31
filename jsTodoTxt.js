@@ -1,5 +1,5 @@
 /*!
- * jsTodoTxt Library v0.1.1
+ * jsTodoTxt Library v0.2.0
  * https://github.com/jmhobbs/jsTodoTxt
  *
  * Copyright 2011, John Hobbs
@@ -35,7 +35,8 @@ var TodoTxt = {
 		var items = [];
 		var lines = contents.split( "\n" );
 		for( i in lines ) {
-			items.push( new TodoTxtItem( lines[i] ) );
+			try { items.push( new TodoTxtItem( lines[i] ) ); }
+			catch ( error ) {}
 		}
 		return items;
 	},
@@ -88,6 +89,11 @@ function TodoTxtItem ( line ) {
 	this.location = null;
 	this.project  = null;
 
+	/*!
+		Render this object to a string.
+
+		\returns A string representation of this object.
+	*/
 	this.toString = function () {
 		var line = this.text;
 		if( null != this.priority ) { line = '(' + this.priority + ') ' + line; }
@@ -98,6 +104,13 @@ function TodoTxtItem ( line ) {
 		return line;
 	};
 
+	/*!
+		Parse a string into this object.
+
+		\param line A string in todo.txt format to parse.
+
+		\throws Exception On an empty task.
+	*/
 	this.parse = function ( line ) {
 		// Reset everything
 		this.text     = null;
@@ -150,6 +163,9 @@ function TodoTxtItem ( line ) {
 		line = line.replace( TodoTxt._trim_re, '');
 
 		this.text = line;
+
+		// If we have an empty task, not much point in creating an object.
+		if( "" == this.text ) { throw new Exception( "Empty Task" ); }
 	};
 	
 	// If we were passed a string, parse it.
