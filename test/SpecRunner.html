@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Jasmine Spec Runner</title>
+
+  <link rel="stylesheet" type="text/css" href="jasmine-core/jasmine.css">
+  <script type="text/javascript" src="jasmine-core/jasmine.js"></script>
+  <script type="text/javascript" src="jasmine-core/jasmine-html.js"></script>
+
+  <script type="text/javascript" src="spec/TodoTxtItem.js"></script>
+  <script type="text/javascript" src="spec/TodoTxtItem-Simple.js"></script>
+  <script type="text/javascript" src="spec/TodoTxtItem-Complete.js"></script>
+  <script type="text/javascript" src="spec/TodoTxtItem-Priority.js"></script>
+  <script type="text/javascript" src="spec/TodoTxtItem-Project.js"></script>
+  <script type="text/javascript" src="spec/TodoTxtItem-Location.js"></script>
+
+  <script type="text/javascript" src="../jsTodoTxt.js"></script>
+
+  <script type="text/javascript">
+    (function() {
+      var jasmineEnv = jasmine.getEnv();
+      jasmineEnv.updateInterval = 1000;
+
+      var trivialReporter = new jasmine.TrivialReporter();
+
+      jasmineEnv.addReporter(trivialReporter);
+
+      jasmineEnv.specFilter = function(spec) {
+        return trivialReporter.specFilter(spec);
+      };
+
+      var currentWindowOnload = window.onload;
+
+      window.onload = function() {
+        if (currentWindowOnload) {
+          currentWindowOnload();
+        }
+        execJasmine();
+      };
+
+      function execJasmine() {
+        jasmineEnv.execute();
+      }
+
+    })();
+  </script>
+
+</head>
+
+<body>
+</body>
+</html>
