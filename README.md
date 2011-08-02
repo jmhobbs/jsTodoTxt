@@ -2,6 +2,12 @@
 
 jsTodoTxt is a library for working with todo.txt formatted files in JavaScript.
 
+# Format
+
+jsTodoTxt attempts to match the [todo.txt format](https://github.com/ginatrapani/todo.txt-cli/wiki/The-Todo.txt-Format) exactly. 
+
+To do so, I've written 50+ tests using the [Jasmine](https://github.com/pivotal/jasmine) library.
+
 # Usage
 
 There are two ways to work with jsTodoTxt (hint: they overlap)
@@ -17,7 +23,7 @@ These are all the data members available on an item:
     text      // The core text of the item
     priority  // The priority level of the item as string [A-Z]
     complete  // Boolean
-		completed // Date completed
+    completed // Date completed
     date      // Date attached to object, typically with a comlete item
     contexts  // Array, contexts for the object, e.g. @Home == "Home"
     projects  // Array, projects fot the object, e.g. +Chores == "Chores"
@@ -41,12 +47,12 @@ Render the item back to a string.
     var item = new TodoTxtItem( "(B) Try out jsTdoTxt" );
     item.priority = 'A';
     item.text = 'Try out jsTodoTxt';
-		item.location = 'Computer';
-		console.log( item.toString() );
+    item.contexts = [ 'Computer' ];
+    console.log( item.toString() );
     // Logs: "(A) Try out jsTodoTxt @Computer"
     
     item.complete = true;
-		item.completed = new Date();
+    item.completed = new Date();
     console.log( item.toString() );
     // Logs: "x 2011-07-24 (A) Try out jsTodoTxt @Computer"
 
@@ -87,7 +93,7 @@ This method renders an array of TodoTxtItem objects to a string.
 
 This method renders a single TodoTxtItem to string.  Really, you should just use toString.
 
-		var item = new TodoTxtItem( "(A) Learn to use toString" );
+    var item = new TodoTxtItem( "(A) Learn to use toString" );
     console.log( TodoTxt.renderItem( item ) ); // Logs:  "(A) Learn to use toString"
 
 # About todo.txt
