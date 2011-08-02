@@ -1,5 +1,5 @@
 /*!
- * jsTodoTxt Library v0.2.0
+ * jsTodoTxt Library v0.3.0
  * https://github.com/jmhobbs/jsTodoTxt
  *
  * Copyright 2011, John Hobbs
@@ -14,15 +14,21 @@ var TodoTxt = {
 
 	// Pre-compile Shared RegExes
 	_trim_re:             /^\s+|\s+$/g,
-	_complete_replace_re: /^x\s*/i,
+
+	_complete_re:         /^x\s([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})\s+/i,
+	_complete_replace_re: /^x\s([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})\s+/i,
+
 	_date_re:             /^([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})/,
 	_date_replace_re:     /^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}\s*/,
-	_priority_re:         /\(([A-Z])\)/,
-	_priority_replace_re: /\s*\([A-Z]\)\s*/,
-	_location_re:         /@(\S+)/,
-	_location_replace_re: /\s*@\S+\s*/,
-	_project_re:          /\+(\S+)/,
-	_project_replace_re:  /\s*\+\S+\s*/,
+
+	_priority_re:         /^\(([A-Z])\)/,
+	_priority_replace_re: /^\([A-Z]\)\s*/,
+
+	_context_re:         /@(\S+)/g,
+	_context_replace_re: /\s*@\S+\s*/g,
+
+	_project_re:          /\+(\S+)/g,
+	_project_replace_re:  /\s*\+\S+\s*/g,
 
 	/*!
 		Parse a string of lines.
@@ -82,12 +88,38 @@ var TodoTxt = {
 
 function TodoTxtItem ( line ) {
 
-	this.text     = null;
-	this.priority = null;
-	this.complete = false;
-	this.date     = null;
-	this.location = null;
-	this.project  = null;
+
+	this.reset = function () {
+		this.text      = null;
+		this.priority  = null;
+		this.complete  = false;
+		this.completed = null;
+		this.date      = null;
+		this.contexts  = null;
+		this.projects  = null;
+	};
+
+	this.dateString = function () {
+		if( this.date ) {
+			return this.date.getFullYear() + '-' +
+				( ( this.date.getMonth() + 1 < 10 ) ? '0' : '' ) + ( this.date.getMonth() + 1 ) + '-' +
+				( ( this.date.getDate() < 10 ) ? '0' : '' ) + this.date.getDate();
+		}
+		else {
+			return null;
+		}
+	};
+
+	this.completedString = function () {
+		if( this.completed ) {
+			return this.completed.getFullYear() + '-' +
+				( ( this.completed.getMonth() + 1 < 10 ) ? '0' : '' ) + ( this.completed.getMonth() + 1 ) + '-' +
+				( ( this.completed.getDate() < 10 ) ? '0' : '' ) + this.completed.getDate();
+		}
+		else {
+			return null;
+		}
+	};
 
 	/*!
 		Render this object to a string.
@@ -96,11 +128,11 @@ function TodoTxtItem ( line ) {
 	*/
 	this.toString = function () {
 		var line = this.text;
+		if( null != this.date ) { line = this.dateString() + ' ' + line; }
 		if( null != this.priority ) { line = '(' + this.priority + ') ' + line; }
-		if( null != this.date ) { line = this.date + ' ' + line; }
-		if( this.complete ) { line = 'x ' + line; }
-		if( null != this.project ) { line = line + ' +' + this.project; } 
-		if( null != this.location ) { line = line + ' @' + this.location; }
+		if( this.complete && null != this.completed ) { line = 'x ' + this.completedString() + ' ' + line; }
+		if( null != this.projects ) { line = line + ' +' + this.projects.join( ' +' ); } 
+		if( null != this.contexts ) { line = line + ' @' + this.contexts.join( ' @' ); }
 		return line;
 	};
 
@@ -112,13 +144,7 @@ function TodoTxtItem ( line ) {
 		\throws Exception On an empty task.
 	*/
 	this.parse = function ( line ) {
-		// Reset everything
-		this.text     = null;
-		this.priority = null;
-		this.complete = false;
-		this.date     = null;
-		this.location = null;
-		this.project  = null;
+		this.reset();	
 
 		// Trim whitespace
 		line = line.replace( TodoTxt._trim_re, '');
@@ -127,15 +153,11 @@ function TodoTxtItem ( line ) {
 		line = line.replace( "\r", '' );
 
 		// Completed
-		if( line[0] == 'x' || line[0] == 'X' ) {
+		var complete = TodoTxt._complete_re.exec( line );
+		if( null != complete ) {
 			this.complete = true;
+			this.completed = new Date( Date.parse( complete[1] ) );
 			line = line.replace( TodoTxt._complete_replace_re, '' );
-		}
-
-		var date = TodoTxt._date_re.exec( line );
-		if( null != date ) {
-			this.date = date[1];
-			line = line.replace( TodoTxt._date_replace_re, '' );
 		}
 
 		// Priority
@@ -145,17 +167,26 @@ function TodoTxtItem ( line ) {
 			line = line.replace( TodoTxt._priority_replace_re, '' );
 		}
 
-		// Location
-		var loc = TodoTxt._location_re.exec( line );
-		if( null != loc ) {
-			this.location = loc[1];
-			line = line.replace( TodoTxt._location_replace_re, ' ' );
+		// Date
+		var date = TodoTxt._date_re.exec( line );
+		if( null != date ) {
+			this.date = new Date( Date.parse( date[1] ) );
+			line = line.replace( TodoTxt._date_replace_re, '' );
+		}
+
+		// Context
+		var contexts = line.match( TodoTxt._context_re );
+		if( null != contexts ) {
+			this.contexts = [];
+			for( i in contexts ) { this.contexts.push( contexts[i].substr( 1 ) ); }
+			line = line.replace( TodoTxt._context_replace_re, ' ' );
 		}
 
 		// Project
-		var project = TodoTxt._project_re.exec( line );
-		if( null != project ) {
-			this.project = project[1];
+		var projects = line.match( TodoTxt._project_re );
+		if( null != projects ) {
+			this.projects = [];
+			for( i in projects ) { this.projects.push( projects[i].substr( 1 ) ); }
 			line = line.replace( TodoTxt._project_replace_re, ' ' );
 		}
 
@@ -169,6 +200,12 @@ function TodoTxtItem ( line ) {
 	};
 	
 	// If we were passed a string, parse it.
-	if( "string" == typeof( line ) ) { this.parse( line ); }
+	if( "string" == typeof( line ) ) { 
+		this.parse( line );
+	}
+	else { 
+		this.reset();
+	}
+
 }
 

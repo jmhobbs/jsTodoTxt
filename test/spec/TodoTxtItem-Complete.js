@@ -6,11 +6,28 @@ describe( "TodoTxtItem", function () {
 		text: "This is a task.",
 		priority: null,
 		complete: true,
-		date: "2011-07-31",
-		location: null,
-		project: null
+		completed: "2011-07-31",
+		date: null,
+		contexts: null,
+		projects: null
 	};
 
+	var invalid = [
+		// Date is required
+		{ raw: "x Task text", text: "x Task text" }
+	];
+
 	describe( "when given a completed task", TodoTxtItemHelper( target ) );
-	
+
+	describe( "when given an invalid completed string", function () {
+		it( "should not parse it", function () {
+			var item;
+			for( i in invalid ) {
+				item = new TodoTxtItem( invalid[i].raw );
+				expect( item.completed ).toEqual( null );
+				expect( item.text ).toEqual( invalid[i].text );
+			}
+		} );
+	} );
+
 } );

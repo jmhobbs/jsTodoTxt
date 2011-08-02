@@ -4,7 +4,7 @@
 		<script src="jsTodoTxt.js"></script>
 		<style>
 			#content, #render { width: 600px; height: 300px; }
-			.priority, .location, .project {
+			.priority, .context, .project {
 				padding: 0 3px;
 				margin: 0 5px;
 				border-radius: 5px;
@@ -17,7 +17,7 @@
 				background: #00A;
 				color: #FFF;
 			}
-			.location {
+			.context {
 				background: #550;
 				color: #FFF;
 			}
@@ -52,6 +52,9 @@ Paint coop @Home +Chickens</textarea>
 				var $complete = document.getElementById( 'complete' );
 				var $incomplete = document.getElementById( 'incomplete' );
 
+				while ( $complete.childNodes.length >= 1 ) { $complete.removeChild( $complete.firstChild ); }
+				while ( $incomplete.childNodes.length >= 1 ) { $incomplete.removeChild( $incomplete.firstChild ); }
+
 				for( i in items ) {
 					var item = items[i];
 
@@ -65,18 +68,22 @@ Paint coop @Home +Chickens</textarea>
 						li.appendChild( p );
 					} 
 
-					if( null != item.project ) { 
-						var p = document.createElement( 'span' );
-						p.setAttribute( 'class', 'project' );
-						p.appendChild( document.createTextNode( item.project ) ); 
-						li.appendChild( p );
+					if( null != item.projects ) { 
+						for( i in item.projects ) {
+							var p = document.createElement( 'span' );
+							p.setAttribute( 'class', 'project' );
+							p.appendChild( document.createTextNode( item.projects[i] ) ); 
+							li.appendChild( p );
+						}
 					} 
 
-					if( null != item.location ) { 
-						var p = document.createElement( 'span' );
-						p.setAttribute( 'class', 'location' );
-						p.appendChild( document.createTextNode( item.location ) ); 
-						li.appendChild( p );
+					if( null != item.contexts ) {
+						for( i in item.contexts ) {
+							var p = document.createElement( 'span' );
+							p.setAttribute( 'class', 'context' );
+							p.appendChild( document.createTextNode( item.contexts[i] ) ); 
+							li.appendChild( p );
+						}
 					} 
 
 					if( item.complete ) {

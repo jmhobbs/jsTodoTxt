@@ -6,11 +6,12 @@ describe( "TodoTxtItem", function () {
 		text: "This is a task.",
 		priority: null,
 		complete: false,
+		completed: null,
 		date: null,
-		location: "Home",
-		project: null
+		contexts: [ "Home" ],
+		projects: null
 	};
 
-	describe( "when given a location-bound task", TodoTxtItemHelper( target ) );
+	describe( "when given a context bound task", TodoTxtItemHelper( target ) );
 
 } );

@@ -14,12 +14,13 @@ The class TodoTxtItem encapsulates the core of the library.
 
 These are all the data members available on an item:
 
-    text     // The core text of the item
-    priority // The priority level of the item as string [A-Z]
-    complete // Boolean
-    date     // Date attached to object, typically with a comlete item
-    location // Location for the object, e.g. @Home == "Home"
-    project  // Project fot the object, e.g. +Chores == "Chores"
+    text      // The core text of the item
+    priority  // The priority level of the item as string [A-Z]
+    complete  // Boolean
+		completed // Date completed
+    date      // Date attached to object, typically with a comlete item
+    contexts  // Array, contexts for the object, e.g. @Home == "Home"
+    projects  // Array, projects fot the object, e.g. +Chores == "Chores"
 
 ### Constructor
 
@@ -45,7 +46,7 @@ Render the item back to a string.
     // Logs: "(A) Try out jsTodoTxt @Computer"
     
     item.complete = true;
-    item.date = '2011-07-24';
+		item.completed = new Date();
     console.log( item.toString() );
     // Logs: "x 2011-07-24 (A) Try out jsTodoTxt @Computer"
 

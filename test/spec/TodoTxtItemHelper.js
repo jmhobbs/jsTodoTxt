@@ -15,20 +15,24 @@ function TodoTxtItemHelper ( target ) {
 			expect( item.priority ).toEqual( target.priority );
 		} );
 
-		it( "should have the correct location", function () {
-			expect( item.location ).toEqual( target.location );
+		it( "should have the correct contexts", function () {
+			expect( item.contexts ).toEqual( target.contexts );
 		} );
 
-		it( "should have the correct project", function () {
-			expect( item.project ).toEqual( target.project );
+		it( "should have the correct projects", function () {
+			expect( item.projects ).toEqual( target.projects );
 		} );
 
 		it( "should have the correct date", function () {
-			expect( item.date ).toEqual( target.date );
+			expect( item.dateString() ).toEqual( target.date );
 		} );
 
 		it( "should have the correct complete state", function () {
 			expect( item.complete ).toEqual( target.complete );
+		} );
+
+		it( "should have the correct completed date", function () {
+			expect( item.completedString() ).toEqual( target.completed );
 		} );
 
 		it( "should render correctly", function () {

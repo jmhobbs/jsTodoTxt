@@ -6,9 +6,10 @@ describe( "TodoTxtItem", function () {
 		text: "This is a task.",
 		priority: null,
 		complete: false,
+		completed: null,
 		date: null,
-		location: null,
-		project: null
+		contexts: null,
+		projects: null
 	};
 
 	describe( "when given a simple task", TodoTxtItemHelper( target ) );
