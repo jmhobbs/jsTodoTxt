@@ -1,9 +1,14 @@
 {
   "name": "jsTodoTxt",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "author": "John Hobbs <john@velvetcache.org>",
   "description": "a library for working with todo.txt formatted files",
-  "contributors": [],
+  "contributors": [
+		{
+			"name": "bartlibert",
+			"url": "https://github.com/bartlibert"
+		}
+	],
   "repository": {
     "type": "git",
     "url": "https://github.com/jmhobbs/jsTodoTxt.git"
