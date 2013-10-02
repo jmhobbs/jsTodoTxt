@@ -29,9 +29,10 @@ var TodoTxt = {
 		\returns An array of TodoTxtItem objects.
 	*/
 	parse: function ( contents ) {
-		var items = [];
-		var lines = contents.split( "\n" );
-		for( i in lines ) {
+		var items = [],
+		    lines = contents.split( "\n" ),
+		    i;
+		for(i = 0; i < lines.length; i++) {
 			try { items.push( new TodoTxtItem( lines[i] ) ); }
 			catch ( error ) {}
 		}
@@ -57,9 +58,12 @@ var TodoTxt = {
 		\returns A string representation of the items.
 	*/
 	render: function( items ) {
-		var lines = [];
+		var lines = [],
+		    i;
 		for( i in items ) {
-			lines.push( items[i].toString() );
+			if( items.hasOwnProperty(i) ) {
+				lines.push( items[i].toString() );
+			}
 		}
 		return lines.join( "\n" );
 	},
@@ -96,9 +100,7 @@ function TodoTxtItem ( line ) {
 				( ( this.date.getMonth() + 1 < 10 ) ? '0' : '' ) + ( this.date.getMonth() ) + '-' +
 				( ( this.date.getDate() < 10 ) ? '0' : '' ) + this.date.getDate();
 		}
-		else {
-			return null;
-		}
+		return null;
 	};
 
 	this.completedString = function () {
@@ -107,9 +109,7 @@ function TodoTxtItem ( line ) {
 				( ( this.completed.getMonth() + 1 < 10 ) ? '0' : '' ) + ( this.completed.getMonth() ) + '-' +
 				( ( this.completed.getDate() < 10 ) ? '0' : '' ) + this.completed.getDate();
 		}
-		else {
-			return null;
-		}
+		return null;
 	};
 
 	/*!
@@ -119,11 +119,11 @@ function TodoTxtItem ( line ) {
 	*/
 	this.toString = function () {
 		var line = this.text;
-		if( null != this.date ) { line = this.dateString() + ' ' + line; }
-		if( null != this.priority ) { line = '(' + this.priority + ') ' + line; }
-		if( this.complete && null != this.completed ) { line = 'x ' + this.completedString() + ' ' + line; }
-		if( null != this.projects ) { line = line + ' +' + this.projects.join( ' +' ); } 
-		if( null != this.contexts ) { line = line + ' @' + this.contexts.join( ' @' ); }
+		if( null !== this.date ) { line = this.dateString() + ' ' + line; }
+		if( null !== this.priority ) { line = '(' + this.priority + ') ' + line; }
+		if( this.complete && null !== this.completed ) { line = 'x ' + this.completedString() + ' ' + line; }
+		if( null !== this.projects ) { line = line + ' +' + this.projects.join( ' +' ); }
+		if( null !== this.contexts ) { line = line + ' @' + this.contexts.join( ' @' ); }
 		return line;
 	};
 
@@ -135,6 +135,8 @@ function TodoTxtItem ( line ) {
 		\throws Exception On an empty task.
 	*/
 	this.parse = function ( line ) {
+		var date_pieces;
+
 		this.reset();	
 
 		// Trim whitespace
@@ -145,41 +147,42 @@ function TodoTxtItem ( line ) {
 
 		// Completed
 		var complete = TodoTxt._complete_re.exec( line );
-		if( null != complete ) {
+		if( null !== complete ) {
 			this.complete = true;
-			var date_pieces = complete[1].split('-');
+			date_pieces = complete[1].split('-');
 			this.completed = new Date( date_pieces[0], date_pieces[1], date_pieces[2] );
 			line = line.replace( TodoTxt._complete_replace_re, '' );
 		}
 
 		// Priority
 		var priority = TodoTxt._priority_re.exec( line );
-		if( null != priority ) {
+		if( null !== priority ) {
 			this.priority = priority[1];
 			line = line.replace( TodoTxt._priority_replace_re, '' );
 		}
 
 		// Date
 		var date = TodoTxt._date_re.exec( line );
-		if( null != date ) {
-			var date_pieces = date[1].split('-');
+		if( null !== date ) {
+			date_pieces = date[1].split('-');
 			this.date = new Date( date_pieces[0], date_pieces[1], date_pieces[2] );
 			line = line.replace( TodoTxt._date_replace_re, '' );
 		}
 
 		// Context
 		var contexts = line.match( TodoTxt._context_re );
-		if( null != contexts ) {
+		if( null !== contexts ) {
+			var i;
 			this.contexts = [];
-			for( i in contexts ) { this.contexts.push( contexts[i].substr( 1 ) ); }
+			for(i = 0; i < contexts.length; i++) { this.contexts.push( contexts[i].substr( 1 ) ); }
 			line = line.replace( TodoTxt._context_replace_re, ' ' );
 		}
 
 		// Project
 		var projects = line.match( TodoTxt._project_re );
-		if( null != projects ) {
+		if( null !== projects ) {
 			this.projects = [];
-			for( i in projects ) { this.projects.push( projects[i].substr( 1 ) ); }
+			for(i = 0; i < projects.length; i++) { this.projects.push( projects[i].substr( 1 ) ); }
 			line = line.replace( TodoTxt._project_replace_re, ' ' );
 		}
 
@@ -189,11 +192,11 @@ function TodoTxtItem ( line ) {
 		this.text = line;
 
 		// If we have an empty task, not much point in creating an object.
-		if( "" == this.text ) { throw new Exception( "Empty Task" ); }
+		if( "" === this.text ) { throw new Exception( "Empty Task" ); }
 	};
 	
 	// If we were passed a string, parse it.
-	if( "string" == typeof( line ) ) { 
+	if( "string" === typeof( line ) ) { 
 		this.parse( line );
 	}
 	else { 
