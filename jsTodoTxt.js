@@ -70,7 +70,7 @@ var TodoTxt = {
 
 	/*
 		Render a single item to a single line. No newline.
-	
+
 		\param item A valid TodoTxtItem object
 
 		\returns A string representation of the item.
@@ -194,12 +194,74 @@ function TodoTxtItem ( line ) {
 		// If we have an empty task, not much point in creating an object.
 		if( "" === this.text ) { throw new Exception( "Empty Task" ); }
 	};
-	
+
+	this._getNumOfNulls = function( lhs, rhs ) {
+		if( lhs == null && rhs == null ) {
+			return 2;
+		}
+		if( lhs == null || rhs == null ) {
+			return 1;
+		}
+		return 0;
+	}
+
+	this._arraysAreEqual = function( lhs, rhs ) {
+		if( this._getNumOfNulls( lhs, rhs ) == 2 ) {
+			return true;
+		}
+		if( this._getNumOfNulls( lhs, rhs ) == 1 ) {
+			return false;
+		}
+		if( lhs.length != rhs.length ) {
+			return false;
+		}
+		for( item in lhs ) {
+			if ( rhs.indexOf(lhs[item]) == -1 ) {
+				return false;
+			}
+		}
+		// if we get here, there is an equal number of elements
+		// and all lhs elements are in the rhs
+		return true;
+	}
+
+	this._datesAreEqual = function( lhs, rhs ) {
+		if( this._getNumOfNulls( lhs, rhs ) == 2 ) {
+			return true;
+		}
+		if( this._getNumOfNulls( lhs, rhs ) == 1 ) {
+			return false;
+		}
+		return (lhs.setHours(0,0,0,0) - rhs.setHours(0,0,0,0)) == 0;
+	}
+
+	this.equals = function( todo ) {
+		var dates = ["date", "completed"];
+		for( i in dates ) {
+			if( !this._datesAreEqual(this[dates[i]], todo[dates[i]]) ) {
+				return false;
+			}
+		}
+		var simpleCompares = ["complete", "priority", "text"];
+		for( i in simpleCompares ) {
+			if( this[simpleCompares[i]] != todo[simpleCompares[i]] ) {
+				return false;
+			}
+		}
+		var arrays = ["projects", "contexts"];
+		for( i in arrays ) {
+			if( !this._arraysAreEqual(this[arrays[i]], todo[arrays[i]]) ) {
+				return false;
+			}
+		}
+		return true;
+	};
+
 	// If we were passed a string, parse it.
 	if( "string" === typeof( line ) ) { 
 		this.parse( line );
 	}
-	else { 
+	else {
 		this.reset();
 	}
 
