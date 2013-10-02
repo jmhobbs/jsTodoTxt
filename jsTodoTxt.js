@@ -1,13 +1,4 @@
 /*!
- * jsTodoTxt Library v0.3.0
- * https://github.com/jmhobbs/jsTodoTxt
- *
- * Copyright 2011, John Hobbs
- * Licensed under the MIT license.
- * https://github.com/jmhobbs/jsTodoTxt/blob/master/LICENSE
- */
-
-/*!
 	Shared members and static functions.
 */
 var TodoTxt = {
