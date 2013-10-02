@@ -22,7 +22,8 @@ module.exports = function(grunt) {
 						"test/spec/TodoTxtItem-Complete.js",
 						"test/spec/TodoTxtItem-Priority.js",
 						"test/spec/TodoTxtItem-Project.js",
-						"test/spec/TodoTxtItem-Context.js"
+						"test/spec/TodoTxtItem-Context.js",
+						"test/spec/TodoTxtItem-Equality.js"
 					]
 				}
 			}
