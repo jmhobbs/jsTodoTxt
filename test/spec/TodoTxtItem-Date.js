@@ -12,6 +12,31 @@ describe( "TodoTxtItem", function () {
 		projects: null
 	};
 
+	var extremity1 = {
+		raw: "2013-12-31 This is a task.",
+		render: "2013-12-31 This is a task.",
+		text: "This is a task.",
+		priority: null,
+		complete: false,
+		completed: null,
+		date: "2013-12-31",
+		contexts: null,
+		projects: null
+	};
+
+	var extremity2 = {
+		raw: "2014-01-01 This is a task.",
+		render: "2014-01-01 This is a task.",
+		text: "This is a task.",
+		priority: null,
+		complete: false,
+		completed: null,
+		date: "2014-01-01",
+		contexts: null,
+		projects: null
+	};
+
+
 	var invalid = [
 		// Date must immediately follow priority
 		{ raw: "(A) Task text 2011-07-31", text: "Task text 2011-07-31" },
@@ -20,6 +45,8 @@ describe( "TodoTxtItem", function () {
 	];
 
 	describe( "when given a dated task", TodoTxtItemHelper( target ) );
+	describe( "when given a dated task in December", TodoTxtItemHelper( extremity1 ) );
+	describe( "when given a dated task in January", TodoTxtItemHelper( extremity2 ) );
 
 	describe( "when given an invalid date", function () {
 		it( "should not parse it", function () {
