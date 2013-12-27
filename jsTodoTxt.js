@@ -97,7 +97,7 @@ function TodoTxtItem ( line, extensions ) {
 	this.dateString = function () {
 		if( this.date ) {
 			return this.date.getFullYear() + '-' +
-				( ( this.date.getMonth() + 1 < 10 ) ? '0' : '' ) + ( this.date.getMonth() ) + '-' +
+				( ( this.date.getMonth() + 1 < 10 ) ? '0' : '' ) + ( this.date.getMonth() + 1 ) + '-' +
 				( ( this.date.getDate() < 10 ) ? '0' : '' ) + this.date.getDate();
 		}
 		return null;
@@ -106,7 +106,7 @@ function TodoTxtItem ( line, extensions ) {
 	this.completedString = function () {
 		if( this.completed ) {
 			return this.completed.getFullYear() + '-' +
-				( ( this.completed.getMonth() + 1 < 10 ) ? '0' : '' ) + ( this.completed.getMonth() ) + '-' +
+				( ( this.completed.getMonth() + 1 < 10 ) ? '0' : '' ) + ( this.completed.getMonth() + 1 ) + '-' +
 				( ( this.completed.getDate() < 10 ) ? '0' : '' ) + this.completed.getDate();
 		}
 		return null;
@@ -165,7 +165,7 @@ function TodoTxtItem ( line, extensions ) {
 		if( null !== complete ) {
 			this.complete = true;
 			date_pieces = complete[1].split('-');
-			this.completed = new Date( date_pieces[0], date_pieces[1], date_pieces[2] );
+			this.completed = new Date( date_pieces[0], date_pieces[1] - 1, date_pieces[2] );
 			line = line.replace( TodoTxt._complete_replace_re, '' );
 		}
 
@@ -180,7 +180,7 @@ function TodoTxtItem ( line, extensions ) {
 		var date = TodoTxt._date_re.exec( line );
 		if( null !== date ) {
 			date_pieces = date[1].split('-');
-			this.date = new Date( date_pieces[0], date_pieces[1], date_pieces[2] );
+			this.date = new Date( date_pieces[0], date_pieces[1] - 1, date_pieces[2] );
 			line = line.replace( TodoTxt._date_replace_re, '' );
 		}
 
