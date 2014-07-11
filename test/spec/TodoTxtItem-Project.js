@@ -14,7 +14,7 @@ describe( "TodoTxtItem", function () {
 
 	var invalid = [
 		// Spaces are not allowed between the + and the project
-		{ raw: "This is a task + Project", text: "This is a task + Project" }
+		{ raw: "This is a task + Project", text: "This is a task + Project" },
 		// Whitespace is required in front of the project listing
 		{ raw: "This is not a priority 5+7", text: "This is not a priority 5+7" }
 	];
