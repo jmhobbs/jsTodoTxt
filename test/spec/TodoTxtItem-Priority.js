@@ -6,6 +6,7 @@ describe( "TodoTxtItem", function () {
 		text: "This is a task.",
 		priority: "A",
 		complete: false,
+		completed: null,
 		date: null,
 		contexts: null,
 		projects: null
