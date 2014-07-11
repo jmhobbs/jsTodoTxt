@@ -15,10 +15,10 @@ var TodoTxt = {
 	_priority_re:         /^\(([A-Z])\)/,
 	_priority_replace_re: /^\([A-Z]\)\s*/,
 
-	_context_re:         /@(\S+)/g,
+	_context_re:         /\s@(\S+)/g,
 	_context_replace_re: /\s*@\S+\s*/g,
 
-	_project_re:          /\+(\S+)/g,
+	_project_re:          /\s\+(\S+)/g,
 	_project_replace_re:  /\s*\+\S+\s*/g,
 
 	/*!
@@ -174,7 +174,7 @@ function TodoTxtItem ( line ) {
 		if( null !== contexts ) {
 			var i;
 			this.contexts = [];
-			for(i = 0; i < contexts.length; i++) { this.contexts.push( contexts[i].substr( 1 ) ); }
+			for(i = 0; i < contexts.length; i++) { this.contexts.push( contexts[i].substr( 2 ) ); }
 			line = line.replace( TodoTxt._context_replace_re, ' ' );
 		}
 
@@ -182,7 +182,7 @@ function TodoTxtItem ( line ) {
 		var projects = line.match( TodoTxt._project_re );
 		if( null !== projects ) {
 			this.projects = [];
-			for(i = 0; i < projects.length; i++) { this.projects.push( projects[i].substr( 1 ) ); }
+			for(i = 0; i < projects.length; i++) { this.projects.push( projects[i].substr( 2 ) ); }
 			line = line.replace( TodoTxt._project_replace_re, ' ' );
 		}
 
