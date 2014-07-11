@@ -15,16 +15,12 @@ module.exports = function(grunt) {
 			jsTodoTxt: {
 				src: "jsTodoTxt.js",
 				options: {
-					specs: [
+					outfile: "test/SpecRunner.html",
+					keepRunner: true,
+					helpers: [
 						"test/spec/TodoTxtItemHelper.js",
-						"test/spec/TodoTxtItem-Core.js",
-						"test/spec/TodoTxtItem-Simple.js",
-						"test/spec/TodoTxtItem-Complete.js",
-						"test/spec/TodoTxtItem-Priority.js",
-						"test/spec/TodoTxtItem-Project.js",
-						"test/spec/TodoTxtItem-Context.js",
-						"test/spec/TodoTxtItem-Equality.js"
-					]
+					],
+					specs: "test/spec/TodoTxtItem-*.js",
 				}
 			}
 		}
