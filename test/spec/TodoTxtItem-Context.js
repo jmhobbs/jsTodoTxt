@@ -10,9 +10,22 @@ describe( "TodoTxtItem", function () {
 		date: null,
 		contexts: [ "Home" ],
 		projects: null
+	},
+	leading_target = {
+		raw: "@Home This is a task.",
+		render: "This is a task. @Home",
+		text: "This is a task.",
+		priority: null,
+		complete: false,
+		completed: null,
+		date: null,
+		contexts: [ "Home" ],
+		projects: null
 	};
 
 	describe( "when given a context bound task", TodoTxtItemHelper( target ) );
+
+	describe( "when given a leading context bound task", TodoTxtItemHelper( leading_target ) );
 
 	var invalid = [
 		// Whitespace is required in front of the context

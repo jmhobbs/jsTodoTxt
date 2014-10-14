@@ -10,6 +10,17 @@ describe( "TodoTxtItem", function () {
 		date: null,
 		contexts: null,
 		projects: [ "Project" ]
+	},
+  leading_target = {
+		raw: "+Project This is a task.",
+		render: "This is a task. +Project",
+		text: "This is a task.",
+		priority: null,
+		complete: false,
+		completed: null,
+		date: null,
+		contexts: null,
+		projects: [ "Project" ]
 	};
 
 	var invalid = [
@@ -20,6 +31,8 @@ describe( "TodoTxtItem", function () {
 	];
 
 	describe( "when given a project task", TodoTxtItemHelper( target ) );
+
+	describe( "when given a leading project task", TodoTxtItemHelper( leading_target ) );
 
 	describe( "when given an invalid project string", function () {
 		it( "should not parse it", function () {
