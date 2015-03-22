@@ -267,3 +267,5 @@ function TodoTxtItem ( line ) {
 
 }
 
+module.exports.TodoTxt = TodoTxt;
+module.exports.TodoTxtItem = TodoTxtItem;
