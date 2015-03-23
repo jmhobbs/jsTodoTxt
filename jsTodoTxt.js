@@ -15,10 +15,10 @@ var TodoTxt = {
 	_priority_re:         /^\(([A-Z])\)/,
 	_priority_replace_re: /^\([A-Z]\)\s*/,
 
-	_context_re:         /\s@(\S+)/g,
+	_context_re:         /(^|\s+)@(\S+)/g,
 	_context_replace_re: /\s*@\S+\s*/g,
 
-	_project_re:          /\s\+(\S+)/g,
+	_project_re:          /(^|\s+)\+(\S+)/g,
 	_project_replace_re:  /\s*\+\S+\s*/g,
 
 	/*!
@@ -137,7 +137,7 @@ function TodoTxtItem ( line ) {
 	this.parse = function ( line ) {
 		var date_pieces;
 
-		this.reset();	
+		this.reset();
 
 		// Trim whitespace
 		line = line.replace( TodoTxt._trim_re, '');
@@ -174,7 +174,7 @@ function TodoTxtItem ( line ) {
 		if( null !== contexts ) {
 			var i;
 			this.contexts = [];
-			for(i = 0; i < contexts.length; i++) { this.contexts.push( contexts[i].substr( 2 ) ); }
+			for(i = 0; i < contexts.length; i++) { this.contexts.push( contexts[i].trim().substr( 1 ) ); }
 			line = line.replace( TodoTxt._context_replace_re, ' ' );
 		}
 
@@ -182,7 +182,7 @@ function TodoTxtItem ( line ) {
 		var projects = line.match( TodoTxt._project_re );
 		if( null !== projects ) {
 			this.projects = [];
-			for(i = 0; i < projects.length; i++) { this.projects.push( projects[i].substr( 2 ) ); }
+			for(i = 0; i < projects.length; i++) { this.projects.push( projects[i].trim().substr( 1 ) ); }
 			line = line.replace( TodoTxt._project_replace_re, ' ' );
 		}
 
@@ -258,7 +258,7 @@ function TodoTxtItem ( line ) {
 	};
 
 	// If we were passed a string, parse it.
-	if( "string" === typeof( line ) ) { 
+	if( "string" === typeof( line ) ) {
 		this.parse( line );
 	}
 	else {
@@ -267,3 +267,10 @@ function TodoTxtItem ( line ) {
 
 }
 
+// Exported functions for node
+(function(exports){
+
+  exports.TodoTxt = TodoTxt;
+	exports.TodoTxtItem = TodoTxtItem;
+
+})(typeof exports === 'undefined' ? window : exports);
