@@ -1,12 +1,16 @@
 {
   "name": "jstodotxt",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "author": "John Hobbs <john@velvetcache.org>",
   "description": "a library for working with todo.txt formatted files",
   "contributors": [
     {
       "name": "bartlibert",
       "url": "https://github.com/bartlibert"
+    },
+    {
+      "name": "Ryan Gaus",
+      "url": "https://github.com/1egoman"
     }
   ],
   "repository": {

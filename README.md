@@ -46,7 +46,7 @@ Create a new item, protentially loading it from a string.
 
 Render the item back to a string.
 
-    var item = new TodoTxtItem( "(B) Try out jsTdoTxt" );
+    var item = new TodoTxtItem( "(B) Try out jsTodoTxt" );
     item.priority = 'A';
     item.text = 'Try out jsTodoTxt';
     item.contexts = [ 'Computer' ];
