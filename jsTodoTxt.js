@@ -267,5 +267,10 @@ function TodoTxtItem ( line ) {
 
 }
 
-module.exports.TodoTxt = TodoTxt;
-module.exports.TodoTxtItem = TodoTxtItem;
+// Exported functions for node
+(function(exports){
+
+  exports.TodoTxt = TodoTxt;
+	exports.TodoTxtItem = TodoTxtItem;
+
+})(typeof exports === 'undefined' ? window : exports);
