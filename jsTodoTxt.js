@@ -137,7 +137,7 @@ function TodoTxtItem ( line ) {
 	this.parse = function ( line ) {
 		var date_pieces;
 
-		this.reset();	
+		this.reset();
 
 		// Trim whitespace
 		line = line.replace( TodoTxt._trim_re, '');
@@ -258,7 +258,7 @@ function TodoTxtItem ( line ) {
 	};
 
 	// If we were passed a string, parse it.
-	if( "string" === typeof( line ) ) { 
+	if( "string" === typeof( line ) ) {
 		this.parse( line );
 	}
 	else {
@@ -267,3 +267,10 @@ function TodoTxtItem ( line ) {
 
 }
 
+// Exported functions for node
+(function(exports){
+
+  exports.TodoTxt = TodoTxt;
+	exports.TodoTxtItem = TodoTxtItem;
+
+})(typeof exports === 'undefined' ? window : exports);
