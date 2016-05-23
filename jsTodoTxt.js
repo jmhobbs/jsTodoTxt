@@ -81,7 +81,7 @@ var TodoTxt = {
 
 };
 
-function TodoTxtItem ( line ) {
+function TodoTxtItem ( line, extensions ) {
 
 
 	this.reset = function () {
@@ -122,10 +122,25 @@ function TodoTxtItem ( line ) {
 		if( null !== this.date ) { line = this.dateString() + ' ' + line; }
 		if( null !== this.priority ) { line = '(' + this.priority + ') ' + line; }
 		if( this.complete && null !== this.completed ) { line = 'x ' + this.completedString() + ' ' + line; }
+		if( '' !== this.extensionStrings() ) { line = line + this.extensionStrings(); }
 		if( null !== this.projects ) { line = line + ' +' + this.projects.join( ' +' ); }
 		if( null !== this.contexts ) { line = line + ' @' + this.contexts.join( ' @' ); }
 		return line;
 	};
+
+	this.extensionStrings = function () {
+		var extensionString = "";
+		if ( null !== this.extensions ) {
+			for (i = 0, len = this.extensions.length; i < len; i++) {
+				if ( "undefined" !== typeof(this[this.extensions[i].name + "String"])) {
+					extensionString = extensionString + ' '
+						+ this.extensions[i].name + ':'
+						+ this[this.extensions[i].name + "String"];
+				}
+			}
+		}
+		return extensionString;
+	}
 
 	/*!
 		Parse a string into this object.
@@ -184,6 +199,26 @@ function TodoTxtItem ( line ) {
 			this.projects = [];
 			for(i = 0; i < projects.length; i++) { this.projects.push( projects[i].trim().substr( 1 ) ); }
 			line = line.replace( TodoTxt._project_replace_re, ' ' );
+		}
+
+        // Extensions
+		if ( null !== this.extensions ) {
+			for(i = 0, len = this.extensions.length; i < len; i++) {
+				if ( this.extensions[i] instanceof TodoTxtExtension) {
+					var [nameValue, parsedLine, stringRepresentation] = this.extensions[i].parsingFunction( line );
+					if ( null !== parsedLine ) {
+						line = parsedLine;
+					}
+
+					if ( null !== nameValue ) {
+						this[this.extensions[i].name] = nameValue;
+					}
+
+					if ( null !== stringRepresentation ) {
+						this[this.extensions[i].name + "String"] = stringRepresentation;
+					}
+				}
+			}
 		}
 
 		// Trim again to clean up
@@ -257,6 +292,13 @@ function TodoTxtItem ( line ) {
 		return true;
 	};
 
+	// If extensions were specified, use them
+	if ( ("object" == typeof( extensions ) ) && (extensions.length > 0 ) ) {
+		this.extensions = extensions;
+	}
+	else {
+		this.extensions = null;
+	}
 	// If we were passed a string, parse it.
 	if( "string" === typeof( line ) ) {
 		this.parse( line );
