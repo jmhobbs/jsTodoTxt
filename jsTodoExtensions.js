@@ -15,3 +15,16 @@ function TodoTxtExtension( name ) {
 	};
 }
 
+function HiddenExtension() {
+	this.name = "hidden";
+}
+
+HiddenExtension.prototype = new TodoTxtExtension();
+HiddenExtension.prototype.parsingFunction = function(line) {
+    var hidden = false;
+    var matchHidden = /h:1/.exec( line );
+    if ( matchHidden !== null ) {
+        hidden = true;
+    }
+	return [hidden, line.replace(/h:1/, ''), null];
+};
