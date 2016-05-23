@@ -201,11 +201,14 @@ function TodoTxtItem ( line, extensions ) {
 			line = line.replace( TodoTxt._project_replace_re, ' ' );
 		}
 
-        // Extensions
+		// Extensions
 		if ( null !== this.extensions ) {
 			for(i = 0, len = this.extensions.length; i < len; i++) {
 				if ( this.extensions[i] instanceof TodoTxtExtension) {
-					var [nameValue, parsedLine, stringRepresentation] = this.extensions[i].parsingFunction( line );
+					var parsed = this.extensions[i].parsingFunction( line );
+					var nameValue = parsed[0];
+					var parsedLine = parsed[1];
+					var stringRepresentation = parsed[2];
 					if ( null !== parsedLine ) {
 						line = parsedLine;
 					}
