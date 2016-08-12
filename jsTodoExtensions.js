@@ -43,3 +43,12 @@ DueExtension.prototype.parsingFunction = function(line) {
     }
     return [dueDate, line.replace(dueRegex, ''), matchDue[1]];
 };
+
+// Exported functions for node
+(function(exports){
+
+  exports.TodoTxtExtension = TodoTxtExtension;
+  exports.HiddenExtension = HiddenExtension;
+  exports.DueExtension = DueExtension;
+
+})(typeof exports === 'undefined' ? window : exports);
