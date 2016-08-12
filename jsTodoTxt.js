@@ -131,6 +131,7 @@ function TodoTxtItem ( line, extensions ) {
 	this.extensionStrings = function () {
 		var extensionString = "";
 		if ( null !== this.extensions ) {
+			var len;
 			for (i = 0, len = this.extensions.length; i < len; i++) {
 				if ( "undefined" !== typeof(this[this.extensions[i].name + "String"])) {
 					extensionString = extensionString + ' '
@@ -203,6 +204,7 @@ function TodoTxtItem ( line, extensions ) {
 
 		// Extensions
 		if ( null !== this.extensions ) {
+			var len;
 			for(i = 0, len = this.extensions.length; i < len; i++) {
 				if ( this.extensions[i] instanceof TodoTxtExtension) {
 					var parsed = this.extensions[i].parsingFunction( line );
