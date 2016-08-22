@@ -132,6 +132,7 @@ function TodoTxtItem ( line, extensions ) {
 		var extensionString = "";
 		if ( null !== this.extensions ) {
 			var len;
+			var i;
 			for (i = 0, len = this.extensions.length; i < len; i++) {
 				if ( "undefined" !== typeof(this[this.extensions[i].name + "String"])) {
 					extensionString = extensionString + ' '
