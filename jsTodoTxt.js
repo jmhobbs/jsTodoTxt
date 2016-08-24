@@ -257,6 +257,7 @@ function TodoTxtItem ( line, extensions ) {
 			return false;
 		}
 		for( item in lhs ) {
+			var item;
 			if ( rhs.indexOf(lhs[item]) == -1 ) {
 				return false;
 			}
@@ -278,6 +279,7 @@ function TodoTxtItem ( line, extensions ) {
 
 	this.equals = function( todo ) {
 		var dates = ["date", "completed"];
+		var i;
 		for( i in dates ) {
 			if( !this._datesAreEqual(this[dates[i]], todo[dates[i]]) ) {
 				return false;
