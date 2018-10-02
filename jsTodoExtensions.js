@@ -40,8 +40,9 @@ DueExtension.prototype.parsingFunction = function(line) {
     if ( matchDue !== null ) {
         datePieces = matchDue[1].split('-');
         dueDate = new Date( datePieces[0], datePieces[1], datePieces[2] );
+        return [dueDate, line.replace(dueRegex, ''), matchDue[1]];
     }
-    return [dueDate, line.replace(dueRegex, ''), matchDue[1]];
+    return [null, null, null];
 };
 
 // Exported functions for node
