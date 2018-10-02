@@ -1,107 +1,106 @@
 <html>
-    <head>
-        <title>jsTodoTxt Example</title>
-        <script src="jsTodoTxt.js"></script>
-        <style>
-            #content, #render { width: 600px; height: 300px; }
-            .priority, .context, .project {
-                padding: 0 3px;
-                margin: 0 5px;
-                border-radius: 5px;
-            }
-            .priority {
-                background: #777;
-                color: #FFF;
-            }
-            .project {
-                background: #00A;
-                color: #FFF;
-            }
-            .context {
-                background: #550;
-                color: #FFF;
-            }
-        </style>
-    </head>
-    <body>
+	<head>
+		<title>jsTodoTxt Example</title>
+		<script src="jsTodoTxt.js"></script>
+		<style>
+			#content, #render { width: 600px; height: 300px; }
+			.priority, .context, .project {
+				padding: 0 3px;
+				margin: 0 5px;
+				border-radius: 5px;
+			}
+			.priority {
+				background: #777;
+				color: #FFF;
+			}
+			.project {
+				background: #00A;
+				color: #FFF;
+			}
+			.context {
+				background: #550;
+				color: #FFF;
+			}
+		</style>
+	</head>
+	<body>
 
-<textarea id="content">x 2011-06-12 (A) Bills and mail @Home due:2018-10-02
+<textarea id="content">x 2011-06-12 (A) Bills and mail @Home
 (B) Fix bedroom Screen @Home
 Paint coop @Home +Chickens</textarea>
 
-        <p><button onclick="parse();">Parse</button></p>
+		<p><button onclick="parse();">Parse</button></p>
 
-        <h2>Incomplete</h2>
-        <ul id="incomplete"></ul>
+		<h2>Incomplete</h2>
+		<ul id="incomplete"></ul>
 
-        <h2>Complete</h2>
-        <ul id="complete"></ul>
+		<h2>Complete</h2>
+		<ul id="complete"></ul>
 
-        <p><button onclick="render();">Render</button></p>
+		<p><button onclick="render();">Render</button></p>
 
 <textarea id="render"></textarea>
 
-        <script>
+		<script>
+			
+			var items = [];
 
-            var items = [];
+			function parse () {
+				var contents = document.getElementById( 'content' ).value;
+				items = TodoTxt.parse( contents );
 
-            function parse () {
-                var contents = document.getElementById( 'content' ).value;
-                items = TodoTxt.parse( contents );
-                console.log(items);
+				var $complete = document.getElementById( 'complete' );
+				var $incomplete = document.getElementById( 'incomplete' );
 
-                var $complete = document.getElementById( 'complete' );
-                var $incomplete = document.getElementById( 'incomplete' );
+				while ( $complete.childNodes.length >= 1 ) { $complete.removeChild( $complete.firstChild ); }
+				while ( $incomplete.childNodes.length >= 1 ) { $incomplete.removeChild( $incomplete.firstChild ); }
 
-                while ( $complete.childNodes.length >= 1 ) { $complete.removeChild( $complete.firstChild ); }
-                while ( $incomplete.childNodes.length >= 1 ) { $incomplete.removeChild( $incomplete.firstChild ); }
+				for( i in items ) {
+					var item = items[i];
 
-                for( i in items ) {
-                    var item = items[i];
+					var li = document.createElement( 'li' );
+					li.appendChild( document.createTextNode( item.text ) );
 
-                    var li = document.createElement( 'li' );
-                    li.appendChild( document.createTextNode( item.text ) );
+					if( null != item.priority ) { 
+						var p = document.createElement( 'span' );
+						p.setAttribute( 'class', 'priority' );
+						p.appendChild( document.createTextNode( item.priority ) ); 
+						li.appendChild( p );
+					} 
 
-                    if( null != item.priority ) {
-                        var p = document.createElement( 'span' );
-                        p.setAttribute( 'class', 'priority' );
-                        p.appendChild( document.createTextNode( item.priority ) );
-                        li.appendChild( p );
-                    }
+					if( null != item.projects ) { 
+						for( i in item.projects ) {
+							var p = document.createElement( 'span' );
+							p.setAttribute( 'class', 'project' );
+							p.appendChild( document.createTextNode( item.projects[i] ) ); 
+							li.appendChild( p );
+						}
+					} 
 
-                    if( null != item.projects ) {
-                        for( i in item.projects ) {
-                            var p = document.createElement( 'span' );
-                            p.setAttribute( 'class', 'project' );
-                            p.appendChild( document.createTextNode( item.projects[i] ) );
-                            li.appendChild( p );
-                        }
-                    }
+					if( null != item.contexts ) {
+						for( i in item.contexts ) {
+							var p = document.createElement( 'span' );
+							p.setAttribute( 'class', 'context' );
+							p.appendChild( document.createTextNode( item.contexts[i] ) ); 
+							li.appendChild( p );
+						}
+					} 
 
-                    if( null != item.contexts ) {
-                        for( i in item.contexts ) {
-                            var p = document.createElement( 'span' );
-                            p.setAttribute( 'class', 'context' );
-                            p.appendChild( document.createTextNode( item.contexts[i] ) );
-                            li.appendChild( p );
-                        }
-                    }
+					if( item.complete ) {
+						$complete.appendChild( li );
+					}
+					else {
+						$incomplete.appendChild( li ); 
+					}
 
-                    if( item.complete ) {
-                        $complete.appendChild( li );
-                    }
-                    else {
-                        $incomplete.appendChild( li );
-                    }
+				}
+			}
 
-                }
-            }
+			function render () {
+				document.getElementById( 'render' ).value = TodoTxt.render( items );
+			}
 
-            function render () {
-                document.getElementById( 'render' ).value = TodoTxt.render( items );
-            }
+		</script>
 
-        </script>
-
-    </body>
+	</body>
 </html>
