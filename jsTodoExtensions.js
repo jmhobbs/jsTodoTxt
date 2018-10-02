@@ -1,22 +1,22 @@
 /*!
-	Extensions to the todo.txt format
+    Extensions to the todo.txt format
 */
 
 function TodoTxtExtension( name ) {
-	this.reset = function () {
-		this.name = null;
-		this.parsingFunction = null;
-	};
+    this.reset = function () {
+        this.name = null;
+        this.parsingFunction = null;
+    };
     // The parsing function should return an array containing
     // the real value of the element, the parsed task line and
     // the string representation of the value.
-	this.parsingFunction = function ( line ) {
-		return [null, null, null];
-	};
+    this.parsingFunction = function ( line ) {
+        return [null, null, null];
+    };
 }
 
 function HiddenExtension() {
-	this.name = "hidden";
+    this.name = "hidden";
 }
 
 HiddenExtension.prototype = new TodoTxtExtension();
@@ -26,7 +26,7 @@ HiddenExtension.prototype.parsingFunction = function(line) {
     if ( matchHidden !== null ) {
         hidden = true;
     }
-	return [hidden, line.replace(/h:1/, ''), null];
+    return [hidden, line.replace(/h:1/, ''), null];
 };
 
 function DueExtension() {
@@ -40,8 +40,9 @@ DueExtension.prototype.parsingFunction = function(line) {
     if ( matchDue !== null ) {
         datePieces = matchDue[1].split('-');
         dueDate = new Date( datePieces[0], datePieces[1], datePieces[2] );
+        return [dueDate, line.replace(dueRegex, ''), matchDue[1]];
     }
-    return [dueDate, line.replace(dueRegex, ''), matchDue[1]];
+    return [null, null, null];
 };
 
 // Exported functions for node
