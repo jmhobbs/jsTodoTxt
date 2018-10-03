@@ -1,4 +1,4 @@
-function TodoTxtItemHelper ( target ) {
+global.TodoTxtItemHelper = function ( target ) {
 	return function () {
 
 		var item;
