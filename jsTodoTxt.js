@@ -25,15 +25,16 @@ var TodoTxt = {
 		Parse a string of lines.
 
 		\param contents A string
+		\param extensions An array of TodoTxtExtension objects (optional)
 
 		\returns An array of TodoTxtItem objects.
 	*/
-	parse: function ( contents ) {
+	parse: function ( contents, extensions ) {
 		var items = [],
 		    lines = contents.split( "\n" ),
 		    i;
 		for(i = 0; i < lines.length; i++) {
-			try { items.push( new TodoTxtItem( lines[i] ) ); }
+			try { items.push( new TodoTxtItem( lines[i], extensions ) ); }
 			catch ( error ) {}
 		}
 		return items;
