@@ -2,9 +2,13 @@
 	<head>
 		<title>jsTodoTxt Example</title>
 		<script src="jsTodoTxt.js"></script>
+		<script src="jsTodoExtensions.js"></script>
 		<style>
+			li {
+				padding: 5px 0;
+			}
 			#content, #render { width: 600px; height: 300px; }
-			.priority, .context, .project {
+			.priority, .context, .project, .due {
 				padding: 0 3px;
 				margin: 0 5px;
 				border-radius: 5px;
@@ -21,13 +25,18 @@
 				background: #550;
 				color: #FFF;
 			}
+			.due {
+				background: #5EB7B8;
+				color: #FFF;
+			}
 		</style>
 	</head>
 	<body>
 
-<textarea id="content">x 2011-06-12 (A) Bills and mail @Home
+		<textarea id="content">x 2011-06-12 (A) Bills and mail @Home
 (B) Fix bedroom Screen @Home
-Paint coop @Home +Chickens</textarea>
+Paint coop @Home +Chickens
+Demo todotxt addons due:2018-10-03</textarea>
 
 		<p><button onclick="parse();">Parse</button></p>
 
@@ -39,15 +48,14 @@ Paint coop @Home +Chickens</textarea>
 
 		<p><button onclick="render();">Render</button></p>
 
-<textarea id="render"></textarea>
+		<textarea id="render"></textarea>
 
 		<script>
-			
 			var items = [];
 
 			function parse () {
 				var contents = document.getElementById( 'content' ).value;
-				items = TodoTxt.parse( contents );
+				items = TodoTxt.parse( contents, [ new DueExtension() ] );
 
 				var $complete = document.getElementById( 'complete' );
 				var $incomplete = document.getElementById( 'incomplete' );
@@ -84,7 +92,14 @@ Paint coop @Home +Chickens</textarea>
 							p.appendChild( document.createTextNode( item.contexts[i] ) ); 
 							li.appendChild( p );
 						}
-					} 
+					}
+
+					if( null != item.due ) {
+						var p = document.createElement( 'span' );
+						p.setAttribute( 'class', 'due' );
+						p.appendChild( document.createTextNode( "Due: " + item.due.toLocaleDateString() ) ); 
+						li.appendChild(p)
+					}
 
 					if( item.complete ) {
 						$complete.appendChild( li );

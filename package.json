@@ -1,6 +1,6 @@
 {
   "name": "jstodotxt",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "author": "John Hobbs <john@velvetcache.org>",
   "description": "a library for working with todo.txt formatted files",
   "contributors": [

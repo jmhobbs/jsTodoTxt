@@ -98,6 +98,43 @@ This method renders a single TodoTxtItem to string.  Really, you should just use
     var item = new TodoTxtItem( "(A) Learn to use toString" );
     console.log( TodoTxt.renderItem( item ) ); // Logs:  "(A) Learn to use toString"
 
+# Addons / Extensions
+
+The todo.txt format [specifies a simple design](https://github.com/todotxt/todo.txt#additional-file-format-definitions) for addons,
+
+> Developers should use the format key:value to define additional metadata (e.g. due:2010-01-02 as a due date).
+> Both key and value must consist of non-whitespace characters, which are not colons. Only one colon separates the key and value.
+
+We support this through a mechanism we call extensions.  To use an extension, you must pass it to the `TodoTxtItem` when initializing it.
+
+    var item = new TodoTxtItem("Do something. due:2010-01-02", [ new DueExtension() ]);
+    console.log( item.due );  // Logs: "Tue Feb 02 2010 00:00:00 GMT-0600 (Central Standard Time)"
+
+## Implementing Your Own
+
+Writing your own extension consists of a `parsingFunction` which extracts your addon, and setting a `name`.
+
+Here's an example one for an addon that sets a color for an item in hex, `color:FFFFFF`.
+
+    function ColorExtension() {
+      // Set the name, this will be the property name on the TodoTxtItem.
+      this.name = "color";
+    };
+
+    ColorExtension.prototype = new TodoTxtExtension();
+
+    ColorExtension.prototype.parsingFunction = function(line) {
+      // We don't have to use a regex, but it's handy for extracting the content.
+      var colorRegex = /\bcolor:([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b/;
+      var match = colorRegex.exec(line);
+      if( match !== null ) {
+        // The return format is [ <value of property>, <line with addon removed>, <string of the value> ]
+        return ["#" + match[1], line.replace(colorRegex, ''), match[1]];
+      }
+      // Return nulls if not found.
+      return [null, null, null];
+    };
+
 # About todo.txt
 
 todo.txt is a format for storing todo lists in a future-proof format.
