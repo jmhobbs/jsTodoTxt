@@ -39,7 +39,7 @@ DueExtension.prototype.parsingFunction = function(line) {
     var matchDue = dueRegex.exec(line);
     if ( matchDue !== null ) {
         datePieces = matchDue[1].split('-');
-        dueDate = new Date( datePieces[0], datePieces[1], datePieces[2] );
+        dueDate = new Date( datePieces[0], datePieces[1] - 1, datePieces[2] );
         return [dueDate, line.replace(dueRegex, ''), matchDue[1]];
     }
     return [null, null, null];
