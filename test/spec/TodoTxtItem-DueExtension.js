@@ -18,6 +18,12 @@ describe( "TodoTxtItem with DueExtension", function() {
 		{ raw: "Task text due:2016-", text: "Task text due:2016-" }
 	];
 
+	function dateToString(date) {
+		return date.getFullYear() + '-' +
+				( ( date.getMonth() + 1 < 10 ) ? '0' : '' ) + ( date.getMonth() + 1 ) + '-' +
+				( ( date.getDate() < 10 ) ? '0' : '' ) + date.getDate();
+	}
+
 	describe( "when given a task with a due date", function () {
 
 		var item;
@@ -59,6 +65,8 @@ describe( "TodoTxtItem with DueExtension", function() {
 		} );
 
 		it( "should have the correct due date", function() {
+			expect( item.due instanceof Date ).toBe( true );
+			expect( dateToString(item.due) ).toEqual( target.due );
 			expect( item.dueString ).toEqual( target.due );
 		} );
 
