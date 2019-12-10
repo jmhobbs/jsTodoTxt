@@ -16,17 +16,18 @@ function TodoTxtExtension( name ) {
 }
 
 function HiddenExtension() {
-	this.name = "hidden";
+	this.name = "h";
 }
 
 HiddenExtension.prototype = new TodoTxtExtension();
 HiddenExtension.prototype.parsingFunction = function(line) {
-    var hidden = false;
-    var matchHidden = /h:1/.exec( line );
+    var hidden = null;
+    var hiddenRegex = /h:1/;
+    var matchHidden = hiddenRegex.exec( line );
     if ( matchHidden !== null ) {
         hidden = true;
     }
-	return [hidden, line.replace(/h:1/, ''), null];
+	return [hidden, line.replace(hiddenRegex, ''), hidden ? 1 : null];
 };
 
 function DueExtension() {

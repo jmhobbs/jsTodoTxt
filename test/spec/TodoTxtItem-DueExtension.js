@@ -72,12 +72,12 @@ describe( "TodoTxtItem with DueExtension", function() {
 
 	} );
 
-	describe( "when given an invalid hidden string", function () {
+	describe( "when given an invalid due string", function () {
 		it( "should not parse it", function () {
 			var item;
 			for( i in invalid ) {
 				item = new TodoTxtItem( invalid[i].raw, [ new HiddenExtension() ] );
-				expect( item.hidden ).toEqual( false );
+				expect( item.due ).toBeUndefined();
 				expect( item.text ).toEqual( invalid[i].text );
 			}
 		} );
