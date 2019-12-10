@@ -1,7 +1,7 @@
 describe( "TodoTxtItem with multiple extensions", function() {
 	var target = {
         raw: "x 2016-07-14 (A) 2016-07-10 This is a task. h:1 due:2016-07-15 @Home +Website @Computer +Laundry",
-		render: "x 2016-07-14 (A) 2016-07-10 This is a task. due:2016-07-15 +Website +Laundry @Home @Computer",
+		render: "x 2016-07-14 (A) 2016-07-10 This is a task. h:1 due:2016-07-15 +Website +Laundry @Home @Computer",
 		text: "This is a task.",
 		priority: "A",
 		complete: true,
@@ -54,7 +54,7 @@ describe( "TodoTxtItem with multiple extensions", function() {
 		} );
 
 		it( "should be hidden", function() {
-			expect( item.hidden ).toEqual( target.hidden );
+			expect( item.h ).toEqual( target.hidden );
 		} );
 
         it ( "should have the correct due date", function() {

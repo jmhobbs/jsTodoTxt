@@ -1,7 +1,7 @@
 describe( "TodoTxtItem with HiddenExtension", function() {
 	var target = {
 		raw: "This is a task. h:1",
-		render: "This is a task.",
+		render: "This is a task. h:1",
 		text: "This is a task.",
 		priority: null,
 		complete: false,
@@ -15,7 +15,8 @@ describe( "TodoTxtItem with HiddenExtension", function() {
 	var invalid = [
 		// Date is required
 		{ raw: "Task text h:0", text: "Task text h:0" },
-		{ raw: "Task text h:", text: "Task text h:" }
+		{ raw: "Task text h:", text: "Task text h:" },
+		{ raw: "Task text hid:1", text: "Task text hid:1" },
 	];
 
 	describe( "when given a hidden task", function () {
@@ -59,7 +60,7 @@ describe( "TodoTxtItem with HiddenExtension", function() {
 		} );
 
 		it( "should be hidden", function() {
-			expect( item.hidden ).toEqual( target.hidden );
+			expect( item.h ).toEqual( target.hidden );
 		} );
 
 	} );
@@ -69,7 +70,7 @@ describe( "TodoTxtItem with HiddenExtension", function() {
 			var item;
 			for( i in invalid ) {
 				item = new TodoTxtItem( invalid[i].raw, [ new HiddenExtension() ] );
-				expect( item.hidden ).toEqual( false );
+				expect( item.h ).toBeUndefined();
 				expect( item.text ).toEqual( invalid[i].text );
 			}
 		} );
