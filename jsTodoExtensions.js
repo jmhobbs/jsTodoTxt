@@ -27,7 +27,7 @@ HiddenExtension.prototype.parsingFunction = function(line) {
     if ( matchHidden !== null ) {
         hidden = true;
     }
-	return [hidden, line.replace(hiddenRegex, ''), hidden ? 1 : null];
+	return [hidden, line.replace(hiddenRegex, ''), hidden ? '1' : null];
 };
 
 function DueExtension() {
