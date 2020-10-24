@@ -22,7 +22,7 @@ function HiddenExtension() {
 HiddenExtension.prototype = new TodoTxtExtension();
 HiddenExtension.prototype.parsingFunction = function(line) {
     var hidden = null;
-    var hiddenRegex = /h:1/;
+    var hiddenRegex = /\bh:1\b/;
     var matchHidden = hiddenRegex.exec( line );
     if ( matchHidden !== null ) {
         hidden = true;
