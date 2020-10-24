@@ -76,7 +76,7 @@ describe( "TodoTxtItem with DueExtension", function() {
 		it( "should not parse it", function () {
 			var item;
 			for( i in invalid ) {
-				item = new TodoTxtItem( invalid[i].raw, [ new HiddenExtension() ] );
+				item = new TodoTxtItem( invalid[i].raw, [ new DueExtension() ] );
 				expect( item.due ).toBeUndefined();
 				expect( item.text ).toEqual( invalid[i].text );
 			}
