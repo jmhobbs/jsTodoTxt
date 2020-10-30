@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jmhobbs/jsTodoTxt.png?branch=develop)](https://travis-ci.org/jmhobbs/jsTodoTxt)
+[![Build Status](https://travis-ci.com/jmhobbs/jsTodoTxt.svg?branch=develop)](https://travis-ci.com/jmhobbs/jsTodoTxt)
 
 # jsTodoTxt
 
@@ -6,7 +6,7 @@ jsTodoTxt is a library for working with todo.txt formatted files in JavaScript.
 
 # Format
 
-jsTodoTxt attempts to match the [todo.txt format](https://github.com/ginatrapani/todo.txt-cli/wiki/The-Todo.txt-Format) exactly. 
+jsTodoTxt attempts to match the [todo.txt format](https://github.com/ginatrapani/todo.txt-cli/wiki/The-Todo.txt-Format) exactly.
 
 To do so, I've written 50+ tests using the [Jasmine](https://github.com/pivotal/jasmine) library.
 
@@ -37,7 +37,7 @@ Create a new item, protentially loading it from a string.
     // Fresh new item!
     var newItem = new TodoTxtItem();
     newItem.text = "Cool!";
-    
+
     // Create an item from a string
     var existingItem = new TodoTxtItem( "(A) Try out jsTodoTxt" );
     console.log( existingItem.priority ); // Logs "A"
@@ -52,7 +52,7 @@ Render the item back to a string.
     item.contexts = [ 'Computer' ];
     console.log( item.toString() );
     // Logs: "(A) Try out jsTodoTxt @Computer"
-    
+
     item.complete = true;
     item.completed = new Date();
     console.log( item.toString() );
