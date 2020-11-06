@@ -38,8 +38,8 @@ var TodoTxt = {
 	*/
 	parse: function ( contents, extensions, onError ) {
 		var items = [],
-		    lines = contents.split( "\n" ),
-		    i;
+			lines = contents.split( "\n" ),
+			i;
 		for(i = 0; i < lines.length; i++) {
 			try {
 				items.push( new TodoTxtItem( lines[i], extensions ) );
@@ -73,7 +73,7 @@ var TodoTxt = {
 	*/
 	render: function( items ) {
 		var lines = [],
-		    i;
+			i;
 		for( i in items ) {
 			if( items.hasOwnProperty(i) ) {
 				lines.push( items[i].toString() );
@@ -329,7 +329,7 @@ function TodoTxtItem ( line, extensions ) {
 // Exported functions for node
 (function(exports){
 
-  exports.TodoTxt = TodoTxt;
+	exports.TodoTxt = TodoTxt;
 	exports.TodoTxtItem = TodoTxtItem;
 
 })(typeof exports === 'undefined' ? window : exports);
