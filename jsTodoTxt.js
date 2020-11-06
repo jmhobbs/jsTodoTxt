@@ -1,3 +1,10 @@
+var TodoTxtExtension;
+if (typeof require === 'function') {
+	TodoTxtExtension = require('./jsTodoExtensions').TodoTxtExtension;
+} else {
+	TodoTxtExtension = window.TodoTxtExtension;
+}
+
 /*!
 	Shared members and static functions.
 */
