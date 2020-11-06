@@ -1,6 +1,6 @@
 describe( "TodoTxtItem with multiple extensions", function() {
 	var target = {
-        raw: "x 2016-07-14 (A) 2016-07-10 This is a task. h:1 due:2016-07-15 @Home +Website @Computer +Laundry",
+		raw: "x 2016-07-14 (A) 2016-07-10 This is a task. h:1 due:2016-07-15 @Home +Website @Computer +Laundry",
 		render: "x 2016-07-14 (A) 2016-07-10 This is a task. h:1 due:2016-07-15 +Website +Laundry @Home @Computer",
 		text: "This is a task.",
 		priority: "A",
@@ -9,8 +9,8 @@ describe( "TodoTxtItem with multiple extensions", function() {
 		date: "2016-07-10",
 		contexts: [ "Home", "Computer" ],
 		projects: [ "Website", "Laundry" ],
-        hidden: true,
-        due: "2016-07-15"
+		hidden: true,
+		due: "2016-07-15"
 	};
 
 	describe( "when given a task with multiple extensions", function () {
@@ -57,9 +57,9 @@ describe( "TodoTxtItem with multiple extensions", function() {
 			expect( item.h ).toEqual( target.hidden );
 		} );
 
-        it ( "should have the correct due date", function() {
-            expect( item.dueString ).toEqual( target.due );
-        })
+		it ( "should have the correct due date", function() {
+			expect( item.dueString ).toEqual( target.due );
+		})
 
 	} );
 } );
