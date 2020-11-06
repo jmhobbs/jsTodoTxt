@@ -35,7 +35,9 @@ var TodoTxt = {
 		    i;
 		for(i = 0; i < lines.length; i++) {
 			try { items.push( new TodoTxtItem( lines[i], extensions ) ); }
-			catch ( error ) {}
+			catch ( error ) {
+				console.error(error)
+			}
 		}
 		return items;
 	},
