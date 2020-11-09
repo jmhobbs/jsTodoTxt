@@ -29,13 +29,19 @@ var TodoTxt = {
 
 		\returns An array of TodoTxtItem objects.
 	*/
-	parse: function ( contents, extensions ) {
+	parse: function ( contents, extensions, onError ) {
 		var items = [],
 		    lines = contents.split( "\n" ),
 		    i;
 		for(i = 0; i < lines.length; i++) {
-			try { items.push( new TodoTxtItem( lines[i], extensions ) ); }
-			catch ( error ) {}
+			try {
+				items.push( new TodoTxtItem( lines[i], extensions ) );
+			}
+			catch ( error ) {
+				if (onError !== undefined) {
+					onError(error)
+				}
+			}
 		}
 		return items;
 	},
