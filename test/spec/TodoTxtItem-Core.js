@@ -61,3 +61,17 @@ describe( "TodoTxtItem", function () {
 
 } );
 
+describe( "TodoTxt", function () {
+	describe( "parsing", function () {
+		var input = "Task 1 @Home +Website\n" +
+			"Task 2 +Website\n" +
+			"Task 3 @Computer";
+
+		it( "should parse correctly", function () {
+			var items = TodoTxt.parse( input );
+			expect( items.length ).toEqual( 3 );
+		} );
+
+	} );
+} );
+
