@@ -11,7 +11,7 @@ describe( "TodoTxtItem", function () {
 		contexts: null,
 		projects: [ "Project" ]
 	},
-  leading_target = {
+	leading_target = {
 		raw: "+Project This is a task.",
 		render: "This is a task. +Project",
 		text: "This is a task.",
@@ -21,6 +21,17 @@ describe( "TodoTxtItem", function () {
 		date: null,
 		contexts: null,
 		projects: [ "Project" ]
+	},
+	target_with_plus_and_project = {
+		raw: "This task contains 2+2=4 and a+b. +Manhattan",
+		render: "This task contains 2+2=4 and a+b. +Manhattan",
+		text: "This task contains 2+2=4 and a+b.",
+		priority: null,
+		complete: false,
+		completed: null,
+		date: null,
+		contexts: null,
+		projects: [ "Manhattan" ]
 	};
 
 	var invalid = [
@@ -33,6 +44,8 @@ describe( "TodoTxtItem", function () {
 	describe( "when given a project task", TodoTxtItemHelper( target ) );
 
 	describe( "when given a leading project task", TodoTxtItemHelper( leading_target ) );
+
+	describe( "when given a task containing + and a project", TodoTxtItemHelper( target_with_plus_and_project ) );
 
 	describe( "when given an invalid project string", function () {
 		it( "should not parse it", function () {
