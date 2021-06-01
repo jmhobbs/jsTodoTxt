@@ -2,7 +2,8 @@
 	Extensions to the todo.txt format
 */
 
-function TodoTxtExtension( name ) {
+// eslint-disable-next-line no-unused-vars
+function TodoTxtExtension(name) {
 	this.reset = function () {
 		this.name = null;
 		this.parsingFunction = null;
@@ -10,7 +11,8 @@ function TodoTxtExtension( name ) {
 	// The parsing function should return an array containing
 	// the real value of the element, the parsed task line and
 	// the string representation of the value.
-	this.parsingFunction = function ( line ) {
+	// eslint-disable-next-line no-unused-vars
+	this.parsingFunction = function (line) {
 		return [null, null, null];
 	};
 }
