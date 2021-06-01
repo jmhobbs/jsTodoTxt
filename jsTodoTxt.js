@@ -75,7 +75,7 @@ var TodoTxt = {
 		var lines = [],
 			i;
 		for( i in items ) {
-			if( items.hasOwnProperty(i) ) {
+			if( Object.prototype.hasOwnProperty.call(items, i) ) {
 				lines.push( items[i].toString() );
 			}
 		}
