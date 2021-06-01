@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.com/jmhobbs/jsTodoTxt.svg?branch=develop)](https://travis-ci.com/jmhobbs/jsTodoTxt)
+[![Build Status](https://github.com/jmhobbs/jsTodoTxt/actions/workflows/tests.yaml/badge.svg?branch=develop)](https://github.com/jmhobbs/jsTodoTxt/actions/workflows/tests.yaml?query=branch%3Adevelop)
+
 
 # jsTodoTxt
 
@@ -134,6 +135,12 @@ Here's an example one for an addon that sets a color for an item in hex, `color:
       // Return nulls if not found.
       return [null, null, null];
     };
+
+# Testing
+
+Run `npm test` to run the suite.
+
+jsTodoTxt is tested with Jasmine, a BDD framework from Pivotal Labs.
 
 # About todo.txt
 
