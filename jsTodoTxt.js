@@ -23,10 +23,10 @@ var TodoTxt = {
 	_priority_replace_re: /^\([A-Z]\)\s*/,
 
 	_context_re:         /(^|\s+)@(\S+)/g,
-	_context_replace_re: /\s*@\S+\s*/g,
+	_context_replace_re: /(^|\s+)@\S+/g,
 
 	_project_re:          /(^|\s+)\+(\S+)/g,
-	_project_replace_re:  /\s*\+\S+\s*/g,
+	_project_replace_re:  /(^|\s+)\+\S+/g,
 
 	/*!
 		Parse a string of lines.
