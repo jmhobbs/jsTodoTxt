@@ -33,6 +33,17 @@ describe( "TodoTxtItem", function () {
 		contexts: null,
 		projects: [ "Manhattan" ]
 	};
+	target_with_plus_plus_and_project = {
+		raw: 'This task uses C++ in it. +project',
+		render: 'This task uses C++ in it. +project',
+		text: 'This task uses C++ in it.',
+		priority: null,
+		complete: false,
+		completed: null,
+		date: null,
+		contexts: null,
+		projects: [ 'project' ]
+	};
 
 	var invalid = [
 		// Spaces are not allowed between the + and the project
@@ -46,6 +57,8 @@ describe( "TodoTxtItem", function () {
 	describe( "when given a leading project task", TodoTxtItemHelper( leading_target ) );
 
 	describe( "when given a task containing + and a project", TodoTxtItemHelper( target_with_plus_and_project ) );
+
+	describe( "when given a task containing ++ and a project", TodoTxtItemHelper( target_with_plus_plus_and_project ) );
 
 	describe( "when given an invalid project string", function () {
 		it( "should not parse it", function () {

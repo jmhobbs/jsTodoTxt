@@ -33,12 +33,25 @@ describe( "TodoTxtItem", function () {
 		contexts: [ "work" ],
 		projects: null
 	};
+	target_with_double_at_and_context = {
+		raw: 'This task has C@@ in it. @work',
+		render: 'This task has C@@ in it. @work',
+		text: 'This task has C@@ in it.',
+		priority: null,
+		complete: false,
+		completed: null,
+		date: null,
+		contexts: [ "work" ],
+		projects: null
+	};
 
 	describe( "when given a context bound task", TodoTxtItemHelper( target ) );
 
 	describe( "when given a leading context bound task", TodoTxtItemHelper( leading_target ) );
 
 	describe( "when given a task containing @ and a context", TodoTxtItemHelper( target_with_at_and_context ) );
+
+	describe( "when given a task containing double @ and a context", TodoTxtItemHelper( target_with_double_at_and_context ) );
 
 	var invalid = [
 		// Whitespace is required in front of the context
