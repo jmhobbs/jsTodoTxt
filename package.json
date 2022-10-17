@@ -1,45 +1,58 @@
 {
-  "name": "jstodotxt",
-  "version": "0.10.0",
-  "author": "John Hobbs <john@velvetcache.org>",
-  "description": "a library for working with todo.txt formatted files",
-  "type": "module",
-  "license": "MIT",
-  "contributors": [
-    {
-      "name": "bartlibert",
-      "url": "https://github.com/bartlibert"
-    },
-    {
-      "name": "Ryan Gaus",
-      "url": "https://github.com/1egoman"
-    },
-    {
-      "name": "Davide Ferrero",
-      "url": "https://github.com/davideferre"
-    },
-    {
-      "name": "Kirill Goncharov",
-      "url": "https://github.com/xuhcc"
-    }
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jmhobbs/jsTodoTxt.git"
-  },
-  "scripts": {
-    "lint": "eslint .",
-    "test": "ava"
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "ava": "^4.3.3",
-    "eslint": "^8.25.0"
-  },
-  "ava": {
-    "files": [
-      "test/**/*.js"
-    ],
-    "verbose": true
-  }
+	"name": "jstodotxt",
+	"version": "1.0.0",
+	"author": "John Hobbs <john@velvetcache.org>",
+	"description": "a library for working with todo.txt formatted files",
+	"license": "MIT",
+	"contributors": [
+		{
+			"name": "bartlibert",
+			"url": "https://github.com/bartlibert"
+		},
+		{
+			"name": "Ryan Gaus",
+			"url": "https://github.com/1egoman"
+		},
+		{
+			"name": "Davide Ferrero",
+			"url": "https://github.com/davideferre"
+		},
+		{
+			"name": "Kirill Goncharov",
+			"url": "https://github.com/xuhcc"
+		}
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jmhobbs/jsTodoTxt.git"
+	},
+	"files": [
+		"/lib",
+		"!**/*.test.{js,d.ts}{,.map}"
+	],
+	"main": "lib/index.js",
+	"scripts": {
+		"lint": "eslint .",
+		"clean": "rimraf dist",
+		"build": "tsc",
+		"test": "npx ava",
+		"test-watch": "npx ava --watch",
+		"prepare": "npm run clean && npm run build"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"ava": "^4.3.3",
+		"rimraf": "^3.0.2",
+		"eslint": "^8.25.0",
+		"ts-node": "^10.9.1",
+		"typescript": "^4.8.4"
+	},
+	"ava": {
+		"extensions": [
+			"ts"
+		],
+		"require": [
+			"ts-node/register"
+		]
+	}
 }

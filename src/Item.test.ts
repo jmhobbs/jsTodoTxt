@@ -1,7 +1,23 @@
 import test from 'ava'
-import Item from '../src/Item.js'
 
-function constructAndCompare(t, input, complete, priority, date, body, contexts, projects, extensions) {
+import Item from './Item'
+
+interface Extension {
+	tag: string
+	value: string
+}
+
+function constructAndCompare(
+	t: any,
+	input: string,
+	complete: boolean,
+	priority: string | null,
+	date: Date | null,
+	body: string,
+	contexts: string[],
+	projects: string[],
+	extensions: Extension[]
+) {
 	const item = new Item(input);
 	t.is(item.completed(), complete);
 	t.is(item.priority(), priority);
@@ -35,7 +51,7 @@ test(
 	'measure space for +chapelShelving @chapel due:2016-05-03',
 	['chapelShelving'],
 	['chapel'],
-	[['due', '2016-05-03']]
+	[{tag: 'due', value: '2016-05-03'}]
 );
 
 

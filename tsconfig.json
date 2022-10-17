@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"incremental": true,
+		"target": "ES2018",
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"esModuleInterop": true,
+		"declaration": true,
+		"declarationMap": true,
+		"outDir": "lib",
+		"declarationDir": "./lib/types"
+	},
+	"include": [
+		"src/**/*"
+	],
+	"ts-node": {
+		"transpileOnly": true
+	}
+}
