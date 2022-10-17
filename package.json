@@ -3,6 +3,8 @@
   "version": "0.10.0",
   "author": "John Hobbs <john@velvetcache.org>",
   "description": "a library for working with todo.txt formatted files",
+  "type": "module",
+  "license": "MIT",
   "contributors": [
     {
       "name": "bartlibert",
@@ -27,15 +29,17 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "test": "node test/runner.js",
-    "build": "uglifyjs --compress --mangle --source-map --output jsTodoTxt.min.js jsTodoTxt.js jsTodoExtensions.js"
+    "test": "ava"
   },
   "dependencies": {},
   "devDependencies": {
-    "eslint": "^7.27.0",
-    "jasmine": "^3.2.0",
-    "uglify-js": "^3.4.9"
+    "ava": "^4.3.3",
+    "eslint": "^8.25.0"
   },
-  "license": "MIT",
-  "main": "jsTodoTxt"
+  "ava": {
+    "files": [
+      "test/**/*.js"
+    ],
+    "verbose": true
+  }
 }
