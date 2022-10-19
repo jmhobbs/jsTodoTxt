@@ -193,6 +193,7 @@ test('setCompleted › Adding with Date', t => {
 	const due = new Date(2022, 7, 1);
 	item.setCompleted(due);
 	t.deepEqual(item.completed(), due);
+	t.true(item.complete());
 });
 
 test('setCompleted › Adding with string', t => {
@@ -200,6 +201,7 @@ test('setCompleted › Adding with string', t => {
 	const due = new Date(2022, 6, 1);
 	item.setCompleted('2022-07-01');
 	t.deepEqual(item.completed(), due);
+	t.true(item.complete());
 });
 
 test('setCompleted › Updating with Date', t => {
@@ -207,12 +209,14 @@ test('setCompleted › Updating with Date', t => {
 	const due = new Date(2022, 7, 1);
 	item.setCompleted(due);
 	t.deepEqual(item.completed(), due);
+	t.true(item.complete());
 });
 
 test('setCompleted › Updating with string', t => {
 	const item = new Item('1999-04-12 I have to do this.');
 	item.setCompleted('2022-07-01');
 	t.deepEqual(item.completed(), new Date(2022, 6, 1));
+	t.true(item.complete());
 });
 
 test('setCompleted › Removing', t => {

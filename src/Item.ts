@@ -178,12 +178,17 @@ export default class Item {
 	};
 
 	setCompleted(date: Date|string|null=null) {
-		// todo: error if created is not set
-		if(date === null || date instanceof Date) {
-			this.#completed = <Date|null> date;
+		if(date === null ) {
+			this.#completed = null;
 		} else {
-			// todo: validate date string
-			this.#completed = dateFromString(<string> date);
+			// todo: error if created is not set
+			if(date instanceof Date) {
+				this.#completed = <Date|null> date;
+			} else {
+				// todo: validate date string
+				this.#completed = dateFromString(<string> date);
+			}
+			this.#complete = true;
 		}
 	}
 
