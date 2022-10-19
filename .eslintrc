@@ -10,6 +10,6 @@
 	"parserOptions": {
 		"sourceType": "module"
 	},
-	"ignorePatterns": ["test/**"],
+	"ignorePatterns": ["test/**", "lib/**"],
 	"rules": {}
 }
