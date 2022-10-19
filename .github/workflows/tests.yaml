@@ -4,14 +4,15 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
       - run: npm install
       - run: npm run lint
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
       - run: npm install
       - run: npm test
+      - uses: codecov/codecov-action@v3
+        with:
+          verbose: true # optional (default = false)
