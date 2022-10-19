@@ -1,4 +1,4 @@
-const rTodo = /^((x) )?(\(([A-Z])\) )?((\d{4}-\d{2}-\d{2}) )?(.*)$/;
+const rTodo = /^((x) )?(\(([A-Z])\) )?(((\d{4}-\d{2}-\d{2}) (\d{4}-\d{2}-\d{2})|(\d{4}-\d{2}-\d{2})) )?(.*)$/;
 const rTags = /([^\s:]+:[^\s:]+|[+@]\S+)/g;
 
 interface Tag {
@@ -65,7 +65,8 @@ function dateFromString(input: string):Date {
 export default class Item {
 	#complete: boolean = false;
 	#priority: Priority = null;
-	#date: Date | null = null;
+	#created: Date | null = null;
+	#completed: Date | null = null;
 	#body: string = '';
 	#contexts: Context[] = [];
 	#projects: Project[] = [];
@@ -79,17 +80,23 @@ export default class Item {
 
 		this.#complete = match[2] === 'x'
 		this.#priority = match[4] || null;
-		if(typeof match[6] !== 'undefined') {
-			this.#date = dateFromString(match[6]);
+
+		if(typeof match[9] !== 'undefined') {
+			this.#created = dateFromString(match[9]);
+		} else if(typeof match[7] !== 'undefined') {
+			this.#completed = dateFromString(match[7]);
+			this.#created = dateFromString(match[8]);
 		}
-		this.setBody(match[7]);
+
+		this.setBody(match[10]);
 	}
 
 	toString() {
 		const parts = [
 			(this.#complete) ? 'x': '',
 			(this.#priority) ? `(${this.#priority})` : '',
-			this.dateString(),
+			this.completedString(),
+			this.createdString(),
 			this.#body,
 		];
 
@@ -125,11 +132,11 @@ export default class Item {
 		}
 	}
 
-	completed() {
+	complete() {
 		return this.#complete;
 	}
 
-	setCompleted(completed: boolean) {
+	setComplete(completed: boolean) {
 		this.#complete = completed;
 	}
 
@@ -142,25 +149,41 @@ export default class Item {
 		this.#priority = priority;
 	}
 
-	date() {
-		return this.#date;
+	created() {
+		return this.#created;
 	}
 
-	dateString() {
-		if(this.#date) {
-			return this.#date.getFullYear() + '-' +
-				( ( this.#date.getMonth() + 1 < 10 ) ? '0' : '' ) + ( this.#date.getMonth() + 1 ) + '-' +
-				( ( this.#date.getDate() < 10 ) ? '0' : '' ) + this.#date.getDate();
-		}
-		return '';
+	createdString():string {
+		return dateString(this.#created);
 	};
 
-	setDate(date: Date|string|null=null) {
-		if(date === null || date instanceof Date) {
-			this.#date = <Date|null> date;
+	setCreated(date: Date|string|null=null) {
+		if(date === null) {
+			this.#created = null;
+			this.#completed = null;
+		} else if (date instanceof Date) {
+			this.#created = <Date> date;
 		} else {
 			// todo: validate date string
-			this.#date = dateFromString(<string> date);
+			this.#created = dateFromString(<string> date);
+		}
+	}
+
+	completed() {
+		return this.#completed;
+	}
+
+	completedString():string {
+		return dateString(this.#completed);
+	};
+
+	setCompleted(date: Date|string|null=null) {
+		// todo: error if created is not set
+		if(date === null || date instanceof Date) {
+			this.#completed = <Date|null> date;
+		} else {
+			// todo: validate date string
+			this.#completed = dateFromString(<string> date);
 		}
 	}
 
@@ -283,6 +306,15 @@ export default class Item {
 			this.#extensions = extensions;
 		}
 	}
+}
+
+function dateString(date:Date|null):string {
+	if(date !== null) {
+		return date.getFullYear() + '-' +
+			( ( date.getMonth() + 1 < 10 ) ? '0' : '' ) + ( date.getMonth() + 1 ) + '-' +
+			( ( date.getDate() < 10 ) ? '0' : '' ) + date.getDate();
+	}
+	return '';
 }
 
 interface Span {

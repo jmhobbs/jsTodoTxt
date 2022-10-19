@@ -14,16 +14,18 @@ function constructAndCompare(
 	input: string,
 	complete: boolean,
 	priority: string | null,
-	date: Date | null,
+	created: Date | null,
+	completed: Date | null,
 	body: string,
 	contexts: string[],
 	projects: string[],
 	extensions: Extension[]
 ) {
 	const item = new Item(input);
-	t.is(item.completed(), complete);
+	t.is(item.complete(), complete);
 	t.is(item.priority(), priority);
-	t.deepEqual(item.date(), date);
+	t.deepEqual(item.created(), created);
+	t.deepEqual(item.completed(), completed);
 	t.is(item.body(), body);
 	t.deepEqual(item.projects(), projects);
 	t.deepEqual(item.contexts(), contexts);
@@ -37,6 +39,7 @@ test(
 	false,
 	null,
 	null,
+	null,
 	'Just the body.',
 	[],
 	[],
@@ -46,14 +49,15 @@ test(
 test(
 	'Constructor › Complete',
 	constructAndCompare,
-	'x (A) 2016-01-02 measure space for +chapelShelving @chapel due:2016-05-03',
+	'x (A) 2016-01-03 2016-01-02 measure space for +chapelShelving @chapel due:2016-01-04',
 	true,
 	'A',
 	new Date(2016, 0, 2),
-	'measure space for +chapelShelving @chapel due:2016-05-03',
+	new Date(2016, 0, 3),
+	'measure space for +chapelShelving @chapel due:2016-01-04',
 	['chapel'],
 	['chapelShelving'],
-	[{key: 'due', value: '2016-05-03'}]
+	[{key: 'due', value: '2016-01-04'}]
 );
 
 // Outputs
@@ -107,19 +111,19 @@ test('toAnnotatedString › Returns the correct ranges', t => {
 
 // Header
 
-test('setCompleted › Works marking complete', t => {
+test('setComplete › Works marking complete', t => {
 	const item = new Item('I have to do this.');
-	t.false(item.completed());
-	item.setCompleted(true);
-	t.true(item.completed());
+	t.false(item.complete());
+	item.setComplete(true);
+	t.true(item.complete());
 	t.is(item.toString(), 'x I have to do this.');
 });
 
-test('setCompleted › Works marking incomplete', t => {
+test('setComplete › Works marking incomplete', t => {
 	const item = new Item('x I have to do this.');
-	t.true(item.completed());
-	item.setCompleted(false);
-	t.false(item.completed());
+	t.true(item.complete());
+	item.setComplete(false);
+	t.false(item.complete());
 	t.is(item.toString(), 'I have to do this.');
 });
 
@@ -144,37 +148,77 @@ test('setPriority › Removing', t => {
 	t.is(item.toString(), 'I have to do this.');
 });
 
-test('setDueDate › Adding with Date', t => {
+test('setCreated › Adding with Date', t => {
 	const item = new Item('I have to do this.');
 	const due = new Date(2022, 7, 1);
-	item.setDate(due);
-	t.deepEqual(item.date(), due);
+	item.setCreated(due);
+	t.deepEqual(item.created(), due);
 });
 
-test('setDueDate › Adding with string', t => {
+test('setCreated › Adding with string', t => {
 	const item = new Item('I have to do this.');
 	const due = new Date(2022, 6, 1);
-	item.setDate('2022-07-01');
-	t.deepEqual(item.date(), due);
+	item.setCreated('2022-07-01');
+	t.deepEqual(item.created(), due);
 });
 
-test('setDueDate › Updating with Date', t => {
+test('setCreated › Updating with Date', t => {
 	const item = new Item('1999-04-12 I have to do this.');
 	const due = new Date(2022, 7, 1);
-	item.setDate(due);
-	t.deepEqual(item.date(), due);
+	item.setCreated(due);
+	t.deepEqual(item.created(), due);
 });
 
-test('setDueDate › Updating with string', t => {
+test('setCreated › Updating with string', t => {
 	const item = new Item('1999-04-12 I have to do this.');
-	item.setDate('2022-07-01');
-	t.deepEqual(item.date(), new Date(2022, 6, 1));
+	item.setCreated('2022-07-01');
+	t.deepEqual(item.created(), new Date(2022, 6, 1));
 });
 
-test('setDueDate › Removing', t => {
+test('setCreated › Removing works', t => {
 	const item = new Item('1999-04-12 I have to do this.');
-	item.setDate();
-	t.is(item.date(), null);
+	item.setCreated();
+	t.is(item.created(), null);
+});
+
+test('setCreated › Removing also removes completed date', t => {
+	const item = new Item('x 2022-05-23 1999-04-12 I have to do this.');
+	item.setCreated();
+	t.is(item.created(), null);
+	t.is(item.completed(), null);
+});
+
+test('setCompleted › Adding with Date', t => {
+	const item = new Item('I have to do this.');
+	const due = new Date(2022, 7, 1);
+	item.setCompleted(due);
+	t.deepEqual(item.completed(), due);
+});
+
+test('setCompleted › Adding with string', t => {
+	const item = new Item('I have to do this.');
+	const due = new Date(2022, 6, 1);
+	item.setCompleted('2022-07-01');
+	t.deepEqual(item.completed(), due);
+});
+
+test('setCompleted › Updating with Date', t => {
+	const item = new Item('1999-04-12 I have to do this.');
+	const due = new Date(2022, 7, 1);
+	item.setCompleted(due);
+	t.deepEqual(item.completed(), due);
+});
+
+test('setCompleted › Updating with string', t => {
+	const item = new Item('1999-04-12 I have to do this.');
+	item.setCompleted('2022-07-01');
+	t.deepEqual(item.completed(), new Date(2022, 6, 1));
+});
+
+test('setCompleted › Removing', t => {
+	const item = new Item('1999-04-12 I have to do this.');
+	item.setCreated();
+	t.is(item.completed(), null);
 });
 
 // Context
