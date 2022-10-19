@@ -88,25 +88,19 @@ test('toAnnotatedString › Returns the correct ranges', t => {
 	const itemStr = '(B) 2022-01-04 My @wall is +painted the color:blue';
 	const item = new Item(itemStr);
 	const annotated = item.toAnnotatedString();
-	t.deepEqual(annotated.contexts, [{
-		tag: 'wall',
-		start: 18,
-		end: 23,
-	}]);
-	t.deepEqual(annotated.projects, [{
-		tag: 'painted',
-		start: 27,
-		end: 35,
-	}]);
-	t.deepEqual(annotated.extensions, [{
-		key: 'color',
-		value: 'blue',
-		start: 40,
-		end: 51,
-	}]);
-	t.is(annotated.string.slice(18, 23), '@wall');
-	t.is(annotated.string.slice(27, 35), '+painted');
-	t.is(annotated.string.slice(40, 51), 'color:blue');
+	t.deepEqual(annotated.contexts.map(ctx => ctx.tag), ['@wall']);
+	t.deepEqual(annotated.projects.map(prj => prj.tag), ['+painted']);
+	t.deepEqual(annotated.extensions.map(ext => ext.tag), ['color:blue']);
+	annotated.contexts.forEach((tag) => {
+		t.is(annotated.string.slice(tag.start, tag.end), tag.tag);
+	});
+	annotated.projects.forEach((tag) => {
+		t.is(annotated.string.slice(tag.start, tag.end), tag.tag);
+	});
+	annotated.extensions.forEach((ext) => {
+		t.is(annotated.string.slice(ext.start, ext.end), <string> ext.tag);
+	});
+
 });
 
 // Header

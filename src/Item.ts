@@ -8,6 +8,7 @@ interface Tag {
 }
 
 interface Extension {
+	tag?: string
 	key: string
 	value: string
 	start: number
@@ -107,27 +108,32 @@ export default class Item {
 		const str = this.toString()
 		const headerLength = str.length - this.#body.length;
 
-		function tagRemap (tag:Tag):Tag {
-			return {
-				tag: tag.tag,
-				start: tag.start + headerLength,
-				end: tag.start + headerLength + tag.tag.length + 1
+		function tagRemap (prefix:string) {
+			return function(tag:Tag):Tag {
+				const fullTag = [prefix, tag.tag].join('');
+				return {
+					tag: fullTag,
+					start: tag.start + headerLength,
+					end: tag.start + headerLength + fullTag.length
+				};
 			};
-		};
+		}
 
 		function extensionsRemap (ext:Extension):Extension {
+			const tag = `${ext.key}:${ext.value}`;
 			return {
+				tag,
 				key: ext.key,
 				value: ext.value,
 				start: ext.start + headerLength,
-				end: ext.start + headerLength + `${ext.key}:${ext.value}`.length + 1
+				end: ext.start + headerLength + tag.length
 			};
 		};
 
 		return {
 			string: str,
-			contexts: this.#contexts.map(tagRemap),
-			projects: this.#projects.map(tagRemap),
+			contexts: this.#contexts.map(tagRemap('@')),
+			projects: this.#projects.map(tagRemap('+')),
 			extensions: this.#extensions.map(extensionsRemap)
 		}
 	}
