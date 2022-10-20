@@ -103,10 +103,27 @@ export class Item {
 	#extensions: TrackedExtension[] = [];
 
 	constructor(line: string) {
-		const match = rTodo.exec(line);
-		if(match === null) {
-			return;
-		}
+		this.parse(line)
+	}
+
+	/**
+	 * Parse in a full todo.txt line, replacing and resetting all fields.
+	 *
+	 * @param line A full todo.txt task line
+	 */
+	parse(line:string) {
+		// reset all fields
+		this.#complete = false;
+		this.#priority = null;
+		this.#created = null;
+		this.#completed = null;
+		this.#body = '';
+		this.#contexts = [];
+		this.#projects = [];
+		this.#extensions = [];
+
+		// this can't _not_ match due to the .* at the end
+		const match = <RegExpExecArray> rTodo.exec(line);
 
 		this.#complete = match[2] === 'x'
 		this.#priority = match[4] || null;

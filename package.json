@@ -39,7 +39,7 @@
 		"test": "c8 --reporter=lcov ava",
 		"dev:test": "ava --watch",
 		"dev:docs": "typedoc --watch ./src/index.ts",
-		"prepare": "npm run clean && npm run build"
+		"prepare": "npm run test && npm run clean && npm run build"
 	},
 	"dependencies": {},
 	"devDependencies": {
