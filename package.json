@@ -27,17 +27,18 @@
 		"url": "https://github.com/jmhobbs/jsTodoTxt.git"
 	},
 	"files": [
-		"/lib",
+		"./lib",
 		"!**/*.test.{js,d.ts}{,.map}"
 	],
-	"main": "lib/index.js",
+	"main": "./lib/index.js",
+	"types": "./lib/index.d.ts",
 	"scripts": {
-		"clean": "rimraf dist",
+		"clean": "rimraf lib",
 		"build": "tsc",
-		"docs": "typedoc src/index.ts",
+		"docs": "typedoc ./src/index.ts",
 		"test": "c8 --reporter=lcov ava",
 		"dev:test": "ava --watch",
-		"dev:docs": "typedoc --watch src/index.ts",
+		"dev:docs": "typedoc --watch ./src/index.ts",
 		"prepare": "npm run clean && npm run build"
 	},
 	"dependencies": {},
@@ -53,7 +54,7 @@
 	},
 	"ava": {
 		"files": [
-			"src/**/*.test.ts"
+			"./src/**/*.test.ts"
 		],
 		"extensions": [
 			"ts"

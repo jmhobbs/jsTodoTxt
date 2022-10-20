@@ -10,7 +10,7 @@
 		"declaration": true,
 		"declarationMap": true,
 		"outDir": "lib",
-		"declarationDir": "./lib/types"
+		"declarationDir": "./lib"
 	},
 	"include": [
 		"src/**/*"
