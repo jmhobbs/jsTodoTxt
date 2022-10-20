@@ -34,19 +34,27 @@
 	"scripts": {
 		"clean": "rimraf dist",
 		"build": "tsc",
+		"docs": "typedoc src/index.ts",
 		"test": "c8 --reporter=lcov ava",
-		"test-watch": "ava --watch",
+		"dev:test": "ava --watch",
+		"dev:docs": "typedoc --watch src/index.ts",
 		"prepare": "npm run clean && npm run build"
 	},
 	"dependencies": {},
 	"devDependencies": {
 		"ava": "^4.3.3",
 		"c8": "^7.12.0",
+		"jsdoc": "^3.6.11",
+		"jsdoc-plugin-typescript": "^2.2.0",
 		"rimraf": "^3.0.2",
 		"ts-node": "^10.9.1",
+		"typedoc": "^0.23.17",
 		"typescript": "^4.8.4"
 	},
 	"ava": {
+		"files": [
+			"src/**/*.test.ts"
+		],
 		"extensions": [
 			"ts"
 		],

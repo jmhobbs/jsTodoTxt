@@ -17,15 +17,22 @@ There are two ways to work with jsTodoTxt (hint: they overlap)
 
 ## The Item Class
 
-The class Item encapsulates the core of the library.
-An Item breaks a single todo.txt line into two logical parts and treats them independently, what we call the header and the body.
+The class Item encapsulates the core of the library. An Item breaks a single todo.txt line into two logical parts and treats them independently, what we call the header and the body.
 
 ```text
-          Header                                     Body
+        Header                                     Body
  .-----------------------.   .----------------------------------------------------.
 '                         ' '                                                      '
 x (A) 2016-05-20 2016-04-30 measure space for +chapelShelving @chapel due:2016-05-30
+|  |  '----.---' '----.---'                   '------.------' '--.--' '------.-----'
+|  |   completed   created                        project     context    extension
+|  |
+|   ' priority
+|
+ ' completed
 ```
+
+### Example
 
 ```javascript
 const item = new Item('Paint the kitchen @home +reno due:2022-12-01');

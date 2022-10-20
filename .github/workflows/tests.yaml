@@ -9,4 +9,4 @@ jobs:
       - run: npm test
       - uses: codecov/codecov-action@v3
         with:
-          verbose: true # optional (default = false)
+          verbose: true

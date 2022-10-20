@@ -1,32 +1,55 @@
 const rTodo = /^((x) )?(\(([A-Z])\) )?(((\d{4}-\d{2}-\d{2}) (\d{4}-\d{2}-\d{2})|(\d{4}-\d{2}-\d{2})) )?(.*)$/;
 const rTags = /([^\s:]+:[^\s:]+|[+@]\S+)/g;
+const rDate = /^\d{4}-\d{2}-\d{2}$/;
+
+// External types
+
+interface Span {
+	start: number
+	end: number
+}
 
 interface Tag {
-	tag: string
-	start: number
-	end?: number
+	string: string
+	span: Span
 }
 
 interface Extension {
-	tag?: string
+	string: string
+	parsed: {
+		key: string
+		value: string
+	}
+	span: Span
+}
+
+export type Context = Tag;
+export type Project = Tag;
+export type Priority = string | null;
+
+export type AnnotatedItem = {
+	readonly string: string
+	// todo: date, priority, etc
+	readonly contexts: Context[]
+	readonly projects: Project[]
+	readonly extensions: Extension[]
+}
+
+// Internal types
+
+interface TrackedTag {
+	tag: string
+	start: number
+}
+
+interface TrackedExtension {
 	key: string
 	value: string
 	start: number
-	end?: number
 }
 
-type Context = Tag;
-type Project = Tag;
-
-type Priority = string | null;
-
-interface AnnotatedItem {
-	string: string
-	// todo: date, priority, etc
-	contexts: Context[]
-	projects: Project[]
-	extensions: Extension[]
-}
+type TrackedContext = TrackedTag;
+type TrackedProject = TrackedTag;
 
 function parseBody(body: string) {
 	let start = 0;
@@ -37,9 +60,9 @@ function parseBody(body: string) {
 	});
 
 
-	const contexts: Context[] = [];
-	const projects: Project[] = [];
-	const extensions: Extension[] = [];
+	const contexts: TrackedContext[] = [];
+	const projects: TrackedProject[] = [];
+	const extensions: TrackedExtension[] = [];
 
 	tags.forEach(([tag, start]) => {
 		if(tag[0] == '@') {
@@ -56,6 +79,9 @@ function parseBody(body: string) {
 }
 
 function dateFromString(input: string):Date {
+	if(null === rDate.exec(input)) {
+		throw new Error('Invalid Date Format');
+	}
 	return new Date(
 		parseInt(input.slice(0, 4), 10),
 		parseInt(input.slice(5, 7), 10) - 1, // months are zero indexed
@@ -63,15 +89,18 @@ function dateFromString(input: string):Date {
 	);
 }
 
-export default class Item {
+/**
+ * Represents a single line in a todo.txt file.
+ */
+export class Item {
 	#complete: boolean = false;
 	#priority: Priority = null;
 	#created: Date | null = null;
 	#completed: Date | null = null;
 	#body: string = '';
-	#contexts: Context[] = [];
-	#projects: Project[] = [];
-	#extensions: Extension[] = [];
+	#contexts: TrackedContext[] = [];
+	#projects: TrackedProject[] = [];
+	#extensions: TrackedExtension[] = [];
 
 	constructor(line: string) {
 		const match = rTodo.exec(line);
@@ -92,41 +121,54 @@ export default class Item {
 		this.setBody(match[10]);
 	}
 
-	toString() {
+	/**
+	 * Generate a full todo.txt line out of this Item.
+	 */
+	toString():string {
 		const parts = [
 			(this.#complete) ? 'x': '',
 			(this.#priority) ? `(${this.#priority})` : '',
-			this.completedString(),
-			this.createdString(),
+			this.completedToString(),
+			this.createdToString(),
 			this.#body,
 		];
 
 		return parts.filter((v) => v !== null && v !== '').join(' ');
 	}
 
+	/**
+	 * Generate the full todo.txt line of this Item, as well as spans describing the
+	 * location of all of it's component parts.
+	 */
 	toAnnotatedString():AnnotatedItem {
 		const str = this.toString()
 		const headerLength = str.length - this.#body.length;
 
 		function tagRemap (prefix:string) {
-			return function(tag:Tag):Tag {
+			return function(tag:TrackedTag):Tag {
 				const fullTag = [prefix, tag.tag].join('');
 				return {
-					tag: fullTag,
-					start: tag.start + headerLength,
-					end: tag.start + headerLength + fullTag.length
+					string: fullTag,
+					span: {
+						start: tag.start + headerLength,
+						end: tag.start + headerLength + fullTag.length
+					}
 				};
 			};
 		}
 
-		function extensionsRemap (ext:Extension):Extension {
+		function extensionsRemap (ext:TrackedExtension):Extension {
 			const tag = `${ext.key}:${ext.value}`;
 			return {
-				tag,
-				key: ext.key,
-				value: ext.value,
-				start: ext.start + headerLength,
-				end: ext.start + headerLength + tag.length
+				string: tag,
+				parsed: {
+					key: ext.key,
+					value: ext.value,
+				},
+				span: {
+					start: ext.start + headerLength,
+					end: ext.start + headerLength + tag.length
+				}
 			};
 		};
 
@@ -138,70 +180,178 @@ export default class Item {
 		}
 	}
 
-	complete() {
+	/**
+	 * Is this task complete?
+	 */
+	complete():boolean {
 		return this.#complete;
 	}
 
-	setComplete(completed: boolean) {
-		this.#complete = completed;
+	/**
+	 * Set if this task is complete.
+	 *
+	 * **Side Effect**
+	 *
+	 * Setting this to false will clear the completed date.
+	 *
+	 * @param complete True if the task is complete.
+	 */
+	setComplete(complete: boolean) {
+		this.#complete = complete;
+		if(!complete) {
+			this.clearCompleted();
+		}
 	}
 
-	priority() {
+	/**
+	 * Get the priority of this Item, or null if not present.
+	 */
+	priority():string|null {
 		return this.#priority;
 	}
 
-	setPriority(priority:string|null=null) {
-		// todo: validate priority
+	/**
+	 * Set the priority of the task.  Passing `null` or no argument clears priority.
+	 *
+	 * @param priority A priority from A-Z or null to clear priority.
+	 * @throws An Error when the input is invalid.
+	 */
+	setPriority(priority:Priority=null) {
+		if(priority) {
+			const char = priority.charCodeAt(0);
+			if(priority.length !== 1 || char < 65 || char > 90) {
+				throw new Error('Invalid Priority');
+			}
+		}
 		this.#priority = priority;
 	}
 
-	created() {
+	/**
+	 * Remove the priority from this task.
+	 */
+	clearPriority() {
+		this.#priority = null;
+	}
+
+	/**
+	 * Get the creation date of this task.
+	 *
+	 * @returns The creation date, or null if not set.
+	 */
+	created():Date|null {
 		return this.#created;
 	}
 
-	createdString():string {
+	/**
+	 * Get the creation date as string, or an empty string if not set.
+	 *
+	 * @returns The creation date as a string formatted for todo.txt (YYYY-MM-DD)
+	 */
+	createdToString():string {
 		return dateString(this.#created);
 	};
 
+	/**
+	 * Set the created date for the task. Passing `null` or no argument clears the created date.
+	 *
+	 * **Side Effect**
+	 *
+	 * Clearing the created date will also unset the completed date.
+	 *
+	 * @param date
+	 * @throws An Error when the date is provided as a string and is invalid.
+	 */
 	setCreated(date: Date|string|null=null) {
 		if(date === null) {
-			this.#created = null;
-			this.#completed = null;
+			this.clearCreated();
 		} else if (date instanceof Date) {
 			this.#created = <Date> date;
 		} else {
-			// todo: validate date string
 			this.#created = dateFromString(<string> date);
 		}
 	}
 
-	completed() {
+	/**
+	 * Remove the created date from the task.
+	 *
+	 * **Side Effect**
+	 *
+	 * Clearing the created date will also unset the completed date.
+	 */
+	clearCreated() {
+		this.#created = null;
+		this.#completed = null;
+	}
+
+	/**
+	 * Get the completed date of this task.
+	 *
+	 * @returns The completed date, or null if not set.
+	 */
+	completed():Date|null {
 		return this.#completed;
 	}
 
-	completedString():string {
+	/**
+	 * Get the completed date as string, or an empty string if not set.
+	 *
+	 * @returns The completed date as a string formatted for todo.txt (YYYY-MM-DD)
+	 */
+	completedToString():string {
 		return dateString(this.#completed);
 	};
 
+	/**
+	 * Set the completed date for the task. Passing `null` or no argument clears the completed date.
+	 *
+	 * **Side Effect**
+	 *
+	 * Setting completed will set complete to true.
+	 *
+	 * @param date
+	 * @throws An Error when the date is provided as a string and is invalid.
+	 * @throws An Error when the created date is not set.
+	 */
 	setCompleted(date: Date|string|null=null) {
 		if(date === null ) {
-			this.#completed = null;
+			this.clearCompleted();
 		} else {
-			// todo: error if created is not set
+			if(this.#created === null) {
+				throw new Error('Can not set completed date without a created date set.');
+			}
 			if(date instanceof Date) {
 				this.#completed = <Date|null> date;
 			} else {
-				// todo: validate date string
 				this.#completed = dateFromString(<string> date);
 			}
 			this.#complete = true;
 		}
 	}
 
-	body() {
+	/**
+	 * Remove the completed date from the task.
+	 */
+	 clearCompleted() {
+		this.#completed = null;
+	}
+
+	/**
+	 * Get the body of the task.
+	 * @returns The body portion of the task.
+	 */
+	body():string {
 		return this.#body;
 	}
 
+	/**
+	 * Parse and set the body and body elements.
+	 *
+	 * **Side Effect**
+	 *
+	 * This will clear and re-load contexts, projects and extensions.
+	 *
+	 * @param body A todo.txt description string.
+	 */
 	setBody(body:string) {
 		const { contexts, projects, extensions } = parseBody(body);
 		this.#body = body;
@@ -210,18 +360,33 @@ export default class Item {
 		this.#extensions = extensions;
 	}
 
-	contexts() {
+	/**
+	 * Get all of the context tags on the task.
+	 *
+	 * @returns Context tags, without the `@`
+	 */
+	contexts():string[] {
 		return this.#contexts.map(({tag}) => tag);
 	}
 
+	/**
+	 * Add a new context to the task. Will append to the end.
+	 * If the context is already present, it will not be added.
+	 *
+	 * @param tag A valid context, without the `@`
+	 */
 	addContext(tag: string) {
-		if(this.#contexts.filter((v) => tag === v.tag).length > 0) {
-			return
+		if(this.#contexts.filter((v) => tag === v.tag).length === 0) {
+			this.#contexts.push({tag, start: this.#body.length});
+			this.#body = [this.#body, `@${tag}`].join(' ');
 		}
-		this.#contexts.push({tag, start: this.#body.length});
-		this.#body = [this.#body, `@${tag}`].join(' ');
 	}
 
+	/**
+	 * Remove a context from the task, if present.
+	 *
+	 * @param tag A valid context, without the `@`
+	 */
 	removeContext(tag: string) {
 		const body = removeTag(this.#body, this.#contexts, tag);
 		if(body !== null) {
@@ -234,18 +399,33 @@ export default class Item {
 		}
 	}
 
-	projects() {
+	/**
+	 * Get all of the project tags on the task.
+	 *
+	 * @returns Project tags, without the `+`
+	 */
+	projects():string[] {
 		return this.#projects.map(({tag}) => tag);
 	}
 
+	/**
+	 * Add a new project to the task. Will append to the end.
+	 * If the project is already present, it will not be added.
+	 *
+	 * @param tag A valid project, without the `+`
+	 */
 	addProject(tag: string) {
-		if(this.#projects.filter((v) => tag === v.tag).length > 0) {
-			return
+		if(this.#projects.filter((v) => tag === v.tag).length === 0) {
+			this.#projects.push({tag, start: this.#body.length});
+			this.#body = [this.#body, `+${tag}`].join(' ');
 		}
-		this.#projects.push({tag, start: this.#body.length});
-		this.#body = [this.#body, `+${tag}`].join(' ');
 	}
 
+	/**
+	 * Remove a project from the task, if present.
+	 *
+	 * @param tag A valid project, without the `+`
+	 */
 	removeProject(tag: string) {
 		const body = removeTag(this.#body, this.#projects, tag);
 		if(body !== null) {
@@ -258,6 +438,11 @@ export default class Item {
 		}
 	}
 
+	/**
+	 * Get all of the project tags on the task.
+	 *
+	 * @returns Project tags, without the `+`
+	 */
 	extensions() {
 		return this.#extensions.map(({key, value}) => { return {key, value} });
 	}
@@ -328,11 +513,6 @@ function dateString(date:Date|null):string {
 	return '';
 }
 
-interface Span {
-	start: number
-	end: number
-}
-
 function cutOutSpans(body: string, spans: Span[]):string {
 	spans.forEach(({start, end}) => {
 		body = [
@@ -344,7 +524,7 @@ function cutOutSpans(body: string, spans: Span[]):string {
 	return body;
 }
 
-function removeTag(body: string, tags: Tag[], tag: string):string|null {
+function removeTag(body: string, tags: TrackedTag[], tag: string):string|null {
 	const spans = tags
 		.filter(ctx => ctx.tag === tag)
 		.map(ctx => { return {start: ctx.start, end: ctx.start + ctx.tag.length + 1} })
