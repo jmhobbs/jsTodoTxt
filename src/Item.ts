@@ -1,3 +1,5 @@
+import { Extension as ExtensionClass, NewExtension } from './Extensions';
+
 const rTodo = /^((x) )?(\(([A-Z])\) )?(((\d{4}-\d{2}-\d{2}) (\d{4}-\d{2}-\d{2})|(\d{4}-\d{2}-\d{2})) )?(.*)$/;
 const rTags = /([^\s:]+:[^\s:]+|[+@]\S+)/g;
 const rDate = /^\d{4}-\d{2}-\d{2}$/;
@@ -20,6 +22,7 @@ interface Extension {
 		key: string
 		value: string
 	}
+	object: ExtensionClass|null
 	span: Span
 }
 
@@ -161,7 +164,7 @@ export class Item {
 		const str = this.toString()
 		const headerLength = str.length - this.#body.length;
 
-		function tagRemap (prefix:string) {
+		const tagRemap = (prefix:string) => {
 			return function(tag:TrackedTag):Tag {
 				const fullTag = [prefix, tag.tag].join('');
 				return {
@@ -174,10 +177,12 @@ export class Item {
 			};
 		}
 
-		function extensionsRemap (ext:TrackedExtension):Extension {
+		const extensionsRemap = (ext:TrackedExtension):Extension => {
 			const tag = `${ext.key}:${ext.value}`;
+
 			return {
 				string: tag,
+				object: NewExtension(this, ext.key, ext.value),
 				parsed: {
 					key: ext.key,
 					value: ext.value,
