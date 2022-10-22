@@ -4,6 +4,11 @@ import { Item } from './Item';
 const sampleCompleted =
 	'x (Z) 2022-10-17 We should keep +todoItems in their @place when rendering out due:2022-10-22';
 
+test('contexts › Deduplicated', (t) => {
+	const item = new Item('Hello @home and @work with +projects and @work extensions:todo');
+	t.deepEqual(item.contexts(), ['home', 'work']);
+});
+
 test('addContext › Adds new contexts', (t) => {
 	const item = new Item(sampleCompleted);
 	item.addContext('computer');
@@ -26,6 +31,12 @@ test('removeContext › Removes contexts', (t) => {
 	const item = new Item('Hello @home and @work with +projects and @work extensions:todo');
 	item.removeContext('work');
 	t.deepEqual(item.contexts(), ['home']);
+});
+
+test('removeContext › Removes contexts (none present)', (t) => {
+	const item = new Item('Hello @home and @work with +projects and @work extensions:todo');
+	item.removeContext('nowhere');
+	t.deepEqual(item.contexts(), ['home', 'work']);
 });
 
 test('removeContext › Updates the body', (t) => {

@@ -385,7 +385,7 @@ export class Item {
 	 * @returns Context tags, without the `@`
 	 */
 	contexts(): string[] {
-		return this.#contexts.map(({ tag }) => tag);
+		return [...new Set(this.#contexts.map(({ tag }) => tag))];
 	}
 
 	/**
@@ -424,7 +424,7 @@ export class Item {
 	 * @returns Project tags, without the `+`
 	 */
 	projects(): string[] {
-		return this.#projects.map(({ tag }) => tag);
+		return [...new Set(this.#projects.map(({ tag }) => tag))];
 	}
 
 	/**

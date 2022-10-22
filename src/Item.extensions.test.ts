@@ -15,6 +15,16 @@ test('setExtension › Removes additional values', (t) => {
 	t.is(item.body(), 'My wall is painted the color:red @home for +housePainting');
 });
 
+test('setExtension › Not found', (t) => {
+	const item = new Item('My wall is painted the color:blue @home for +housePainting');
+	item.setExtension('finish', 'matte');
+	t.deepEqual(item.extensions(), [
+		{ key: 'color', value: 'blue' },
+		{ key: 'finish', value: 'matte' },
+	]);
+	t.is(item.body(), 'My wall is painted the color:blue @home for +housePainting finish:matte');
+});
+
 test('addExtension › Allows for multiple of the same key', (t) => {
 	const item = new Item('My wall is painted the color:blue');
 	item.addExtension('color', 'red');
