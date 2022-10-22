@@ -4,6 +4,11 @@ import { Item } from './Item';
 const sampleCompleted =
 	'x (Z) 2022-10-17 We should keep +todoItems in their @place when rendering out due:2022-10-22';
 
+test('projects › Deduplicates', (t) => {
+	const item = new Item('Hello @home with +goals and +projects and +goals extensions:todo');
+	t.deepEqual(item.projects(), ['goals', 'projects']);
+});
+
 test('addProject › Adds new projects', (t) => {
 	const item = new Item(sampleCompleted);
 	item.addProject('rewrite');
@@ -26,6 +31,12 @@ test('removeProject › Removes projects', (t) => {
 	const item = new Item('Hello @home with +goals and +projects and +goals extensions:todo');
 	item.removeProject('goals');
 	t.deepEqual(item.projects(), ['projects']);
+});
+
+test('removeProject › Removes projects (none present)', (t) => {
+	const item = new Item('Hello @home with +goals and +projects and +goals extensions:todo');
+	item.removeProject('nothing');
+	t.deepEqual(item.projects(), ['goals', 'projects']);
 });
 
 test('removeProject › Updates the body', (t) => {

@@ -43,6 +43,10 @@ export class List {
 		return this.#items.map((item) => item.toString()).join('\n');
 	}
 
+	items(): Item[] {
+		return this.#items;
+	}
+
 	filter(input: ListFilter): ListItem[] {
 		return this.#items
 			.map((item: Item, index: number): ListItem => {
