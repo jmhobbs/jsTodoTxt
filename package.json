@@ -39,7 +39,7 @@
 		"lint": "run-s lint:*",
 		"lint:eslint": "eslint . --ext .ts",
 		"lint:format": "prettier --check 'src/**/*.ts'",
-		"test": "c8 --reporter=lcov ava",
+		"test": "c8 --reporter=lcov --reporter=text ava",
 		"dev:test": "ava --watch",
 		"dev:docs": "typedoc --watch ./src/index.ts",
 		"prepare": "run-s lint test clean build"
@@ -50,6 +50,7 @@
 		"ava": "^4.3.3",
 		"c8": "^7.12.0",
 		"eslint": "^8.26.0",
+		"eslint-plugin-ava": "^13.2.0",
 		"jsdoc": "^3.6.11",
 		"jsdoc-plugin-typescript": "^2.2.0",
 		"npm-run-all": "^4.1.5",

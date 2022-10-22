@@ -1,5 +1,4 @@
-import test from 'ava';
-import { ExecutionContext } from 'ava';
+import test, { ExecutionContext } from 'ava';
 import { Item } from './Item';
 
 interface Extension {
