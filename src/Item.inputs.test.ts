@@ -1,13 +1,14 @@
-import test from 'ava'
-import { Item } from './Item'
+import test from 'ava';
+import { ExecutionContext } from 'ava';
+import { Item } from './Item';
 
 interface Extension {
-	key: string
-	value: string
+	key: string;
+	value: string;
 }
 
 function compare(
-	t: any,
+	t: ExecutionContext,
 	item: Item,
 	complete: boolean,
 	priority: string | null,
@@ -29,7 +30,7 @@ function compare(
 }
 
 function constructAndCompare(
-	t: any,
+	t: ExecutionContext,
 	input: string,
 	complete: boolean,
 	priority: string | null,
@@ -69,11 +70,13 @@ test(
 	'measure space for +chapelShelving @chapel due:2016-01-04',
 	['chapel'],
 	['chapelShelving'],
-	[{key: 'due', value: '2016-01-04'}]
+	[{ key: 'due', value: '2016-01-04' }]
 );
 
-test('parse › Resets everything', t => {
-	const item = new Item('x (A) 2016-01-03 2016-01-02 measure space for +chapelShelving @chapel due:2016-01-04');
+test('parse › Resets everything', (t) => {
+	const item = new Item(
+		'x (A) 2016-01-03 2016-01-02 measure space for +chapelShelving @chapel due:2016-01-04'
+	);
 	item.parse('Hello');
 	compare(t, item, false, null, null, null, 'Hello', [], [], []);
 });

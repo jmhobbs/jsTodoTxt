@@ -1,4 +1,5 @@
-import test from 'ava'
+import test from 'ava';
+import { ExecutionContext } from 'ava';
 import { List, ListFilter } from './List';
 
 const NOT_COMPLETE = 'not complete';
@@ -38,28 +39,30 @@ const linesIndex = Object.fromEntries(lines.map((v, i) => [v, i]));
 const list = new List(lines);
 
 function compare(
-	t: any,
+	t: ExecutionContext,
 	filter: ListFilter,
-	included: string[]|null,
-	excluded: string[]|null=null
+	included: string[] | null,
+	excluded: string[] | null = null
 ) {
 	const filtered = list.filter(filter);
 	//console.warn({filtered: filtered.map(itm => itm.item.toString())});
 	let expected: string[] = [];
-	if(included !== null) {
+	if (included !== null) {
 		t.is(filtered.length, included.length);
 		expected = included;
-
 	} else if (excluded !== null) {
 		t.is(filtered.length, lines.length - excluded.length);
-		expected = lines.filter(line => excluded.indexOf(line) === -1);
+		expected = lines.filter((line) => excluded.indexOf(line) === -1);
 	}
 	expected.forEach((line: string, index: number) => {
-		t.is(filtered[index].item.toString(), line, `expected line "${line}", got "${filtered[index].item.toString()}"`);
+		t.is(
+			filtered[index].item.toString(),
+			line,
+			`expected line "${line}", got "${filtered[index].item.toString()}"`
+		);
 		t.is(filtered[index].index, linesIndex[line], `index does not match for ${line}`);
 	});
 }
-
 
 test(
 	'filter › all',
@@ -67,204 +70,142 @@ test(
 	{
 		complete: true,
 		priority: 'B',
-		created: { start: new Date(2020, 4, 1), end: new Date(2020, 5, 1)},
+		created: { start: new Date(2020, 4, 1), end: new Date(2020, 5, 1) },
 		completed: { start: new Date(2020, 5, 1), end: new Date(2020, 6, 1) },
 		body: /^Everything/,
 	},
 	[EVERYTHING]
 );
 
-test(
-	'filter › complete',
-	compare,
-	{ complete: true },
-	[COMPLETE, EVERYTHING, COMPLETED_AUGUST, COMPLETED_DECEMBER]
-);
+test('filter › complete', compare, { complete: true }, [
+	COMPLETE,
+	EVERYTHING,
+	COMPLETED_AUGUST,
+	COMPLETED_DECEMBER,
+]);
 
-test(
-	'filter › ! complete',
-	compare,
-	{ complete: false },
-	null,
-	[COMPLETE, EVERYTHING, COMPLETED_AUGUST, COMPLETED_DECEMBER]
-);
+test('filter › ! complete', compare, { complete: false }, null, [
+	COMPLETE,
+	EVERYTHING,
+	COMPLETED_AUGUST,
+	COMPLETED_DECEMBER,
+]);
 
-test(
-	'filter › priority',
-	compare,
-	{ priority: 'A' },
-	[PRIORITY]
-);
+test('filter › priority', compare, { priority: 'A' }, [PRIORITY]);
 
-test(
-	'filter › priority (no match)',
-	compare,
-	{ priority: 'Z' },
-	[]
-);
+test('filter › priority (no match)', compare, { priority: 'Z' }, []);
 
-test(
-	'filter › ! priority',
-	compare,
-	{ priority: null },
-	null,
-	[PRIORITY, EVERYTHING]
-);
+test('filter › ! priority', compare, { priority: null }, null, [PRIORITY, EVERYTHING]);
 
-test(
-	'filter › created › after start',
-	compare,
-	{ created: { start: new Date(2021, 0, 1)} },
-	[ CREATED_MARCH, CREATED_JULY ]
-);
+test('filter › created › after start', compare, { created: { start: new Date(2021, 0, 1) } }, [
+	CREATED_MARCH,
+	CREATED_JULY,
+]);
 
-test(
-	'filter › created › before end',
-	compare,
-	{ created: { end: new Date(2021, 5, 1)} },
-	[ EVERYTHING, CREATED_MARCH, COMPLETED_AUGUST, COMPLETED_DECEMBER ]
-);
+test('filter › created › before end', compare, { created: { end: new Date(2021, 5, 1) } }, [
+	EVERYTHING,
+	CREATED_MARCH,
+	COMPLETED_AUGUST,
+	COMPLETED_DECEMBER,
+]);
 
 test(
 	'filter › created › between',
 	compare,
-	{ created: { start: new Date(2021, 0, 1), end: new Date(2021, 5, 1)} },
-	[ CREATED_MARCH ]
+	{ created: { start: new Date(2021, 0, 1), end: new Date(2021, 5, 1) } },
+	[CREATED_MARCH]
 );
 
-test(
-	'filter › ! created',
-	compare,
-	{ created: null },
-	null,
-	[ EVERYTHING, CREATED_MARCH, CREATED_JULY, COMPLETED_AUGUST, COMPLETED_DECEMBER ]
-);
+test('filter › ! created', compare, { created: null }, null, [
+	EVERYTHING,
+	CREATED_MARCH,
+	CREATED_JULY,
+	COMPLETED_AUGUST,
+	COMPLETED_DECEMBER,
+]);
 
-test(
-	'filter › completed › after start',
-	compare,
-	{ completed: { start: new Date(2020, 6, 1)} },
-	[ COMPLETED_AUGUST, COMPLETED_DECEMBER ]
-);
+test('filter › completed › after start', compare, { completed: { start: new Date(2020, 6, 1) } }, [
+	COMPLETED_AUGUST,
+	COMPLETED_DECEMBER,
+]);
 
-test(
-	'filter › completed › before end',
-	compare,
-	{ completed: { end: new Date(2020, 11, 30)} },
-	[ EVERYTHING, COMPLETED_AUGUST, COMPLETED_DECEMBER ]
-);
+test('filter › completed › before end', compare, { completed: { end: new Date(2020, 11, 30) } }, [
+	EVERYTHING,
+	COMPLETED_AUGUST,
+	COMPLETED_DECEMBER,
+]);
 
 test(
 	'filter › completed › between',
 	compare,
-	{ completed: { start: new Date(2020, 10, 1), end: new Date(2021, 0, 1)} },
-	[ COMPLETED_DECEMBER ]
+	{ completed: { start: new Date(2020, 10, 1), end: new Date(2021, 0, 1) } },
+	[COMPLETED_DECEMBER]
 );
 
-test(
-	'filter › ! completed',
-	compare,
-	{ completed: null },
-	null,
-	[ EVERYTHING, COMPLETED_AUGUST, COMPLETED_DECEMBER ]
-);
+test('filter › ! completed', compare, { completed: null }, null, [
+	EVERYTHING,
+	COMPLETED_AUGUST,
+	COMPLETED_DECEMBER,
+]);
 
-test(
-	'filter › body › regex',
-	compare,
-	{ body: /^Created in/ },
-	[ CREATED_MARCH, CREATED_JULY ]
-);
+test('filter › body › regex', compare, { body: /^Created in/ }, [CREATED_MARCH, CREATED_JULY]);
 
-test(
-	'filter › body › string',
-	compare,
-	{ body: 'complete' },
-	[ COMPLETE ]
-);
+test('filter › body › string', compare, { body: 'complete' }, [COMPLETE]);
 
-test(
-	'filter › contexts › and › single',
-	compare,
-	{ contextsAnd: [ 'home' ] },
-	[ CONTEXT_HOME, CONTEXTS ]
-);
+test('filter › contexts › and › single', compare, { contextsAnd: ['home'] }, [
+	CONTEXT_HOME,
+	CONTEXTS,
+]);
 
-test(
-	'filter › contexts › and › multiple',
-	compare,
-	{ contextsAnd: [ 'home', 'computer' ] },
-	[ CONTEXTS ]
-);
+test('filter › contexts › and › multiple', compare, { contextsAnd: ['home', 'computer'] }, [
+	CONTEXTS,
+]);
 
-test(
-	'filter › contexts › or › single',
-	compare,
-	{ contextsOr: [ 'home' ] },
-	[ CONTEXT_HOME, CONTEXTS ]
-);
+test('filter › contexts › or › single', compare, { contextsOr: ['home'] }, [
+	CONTEXT_HOME,
+	CONTEXTS,
+]);
 
-test(
-	'filter › contexts › or › multiple',
-	compare,
-	{ contextsOr: [ 'home', 'computer' ] },
-	[ CONTEXT_HOME, CONTEXT_COMPUTER, CONTEXTS ]
-);
+test('filter › contexts › or › multiple', compare, { contextsOr: ['home', 'computer'] }, [
+	CONTEXT_HOME,
+	CONTEXT_COMPUTER,
+	CONTEXTS,
+]);
 
-test(
-	'filter › contexts › not',
-	compare,
-	{ contextsNot: [ 'everywhere' ] },
-	null,
-	[ EVERYTHING ]
-);
+test('filter › contexts › not', compare, { contextsNot: ['everywhere'] }, null, [EVERYTHING]);
 
 test(
 	'filter › contexts › or + not',
 	compare,
-	{ contextsOr: [ 'home', 'computer' ], contextsNot: [ 'home' ] },
-	[ CONTEXT_COMPUTER ]
+	{ contextsOr: ['home', 'computer'], contextsNot: ['home'] },
+	[CONTEXT_COMPUTER]
 );
 
-test(
-	'filter › projects › and › single',
-	compare,
-	{ projectsAnd: [ 'shed' ] },
-	[ PROJECT_SHED, PROJECTS ]
-);
+test('filter › projects › and › single', compare, { projectsAnd: ['shed'] }, [
+	PROJECT_SHED,
+	PROJECTS,
+]);
 
-test(
-	'filter › projects › and › multiple',
-	compare,
-	{ projectsAnd: [ 'shed', 'report' ] },
-	[ PROJECTS ]
-);
+test('filter › projects › and › multiple', compare, { projectsAnd: ['shed', 'report'] }, [
+	PROJECTS,
+]);
 
-test(
-	'filter › projects › or › single',
-	compare,
-	{ projectsOr: [ 'shed' ] },
-	[ PROJECT_SHED, PROJECTS ]
-);
+test('filter › projects › or › single', compare, { projectsOr: ['shed'] }, [
+	PROJECT_SHED,
+	PROJECTS,
+]);
 
-test(
-	'filter › projects › or › multiple',
-	compare,
-	{ projectsOr: [ 'shed', 'report' ] },
-	[ PROJECT_REPORT, PROJECT_SHED, PROJECTS ]
-);
+test('filter › projects › or › multiple', compare, { projectsOr: ['shed', 'report'] }, [
+	PROJECT_REPORT,
+	PROJECT_SHED,
+	PROJECTS,
+]);
 
-test(
-	'filter › projects › not',
-	compare,
-	{ projectsNot: [ 'allAtOnce' ] },
-	null,
-	[ EVERYTHING ]
-);
+test('filter › projects › not', compare, { projectsNot: ['allAtOnce'] }, null, [EVERYTHING]);
 
 test(
 	'filter › projects › or + not',
 	compare,
-	{ projectsOr: [ 'shed', 'report' ], projectsNot: [ 'shed' ] },
-	[ PROJECT_REPORT ]
+	{ projectsOr: ['shed', 'report'], projectsNot: ['shed'] },
+	[PROJECT_REPORT]
 );
