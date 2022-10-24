@@ -47,6 +47,28 @@ export class List {
 		return this.#items;
 	}
 
+	projects(): string[] {
+		return [
+			...new Set(this.#items.map((item) => item.projects()).reduce((p, n) => [...p, ...n], [])),
+		];
+	}
+
+	contexts(): string[] {
+		return [
+			...new Set(this.#items.map((item) => item.contexts()).reduce((p, n) => [...p, ...n], [])),
+		];
+	}
+
+	extensions(): string[] {
+		return [
+			...new Set(
+				this.#items
+					.map((item) => item.extensions().map((ext) => ext.key))
+					.reduce((p, n) => [...p, ...n], [])
+			),
+		];
+	}
+
 	filter(input: ListFilter): ListItem[] {
 		return this.#items
 			.map((item: Item, index: number): ListItem => {
