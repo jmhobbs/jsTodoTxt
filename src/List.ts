@@ -2,10 +2,12 @@ import { Item, Priority } from './Item';
 
 const rTrim = /[\r\n]*$/;
 
-interface DateRange {
+export interface DateRange {
 	start?: Date;
 	end?: Date;
 }
+
+export type ExtensionFilterFunction = (extensions: { key: string; value: string }[]) => boolean;
 
 export interface ListFilter {
 	complete?: boolean;
@@ -19,11 +21,16 @@ export interface ListFilter {
 	projectsAnd?: string[];
 	projectsOr?: string[];
 	projectsNot?: string[];
+	extensions?: ExtensionFilterFunction | string[];
 }
 
 export interface ListItem {
 	index: number;
 	item: Item;
+}
+
+interface KeysForExtensions {
+	[key: string]: string[];
 }
 
 export class List {
@@ -59,14 +66,18 @@ export class List {
 		];
 	}
 
-	extensions(): string[] {
-		return [
-			...new Set(
-				this.#items
-					.map((item) => item.extensions().map((ext) => ext.key))
-					.reduce((p, n) => [...p, ...n], [])
-			),
-		];
+	extensions(): KeysForExtensions {
+		const ret: KeysForExtensions = {};
+
+		this.#items.forEach((item) => {
+			item.extensions().forEach((ext) => {
+				const values = ret[ext.key] || [];
+				values.push(ext.value);
+				ret[ext.key] = [...new Set(values)];
+			});
+		});
+
+		return ret;
 	}
 
 	filter(input: ListFilter): ListItem[] {
@@ -169,6 +180,21 @@ export class List {
 						}).length > 0
 					) {
 						return false;
+					}
+				}
+
+				if (input.extensions !== undefined) {
+					if (typeof input.extensions === 'function') {
+						if (!input.extensions(item.extensions())) {
+							return false;
+						}
+					} else {
+						if (
+							item.extensions().filter(({ key }) => (<string[]>input.extensions).includes(key))
+								.length === 0
+						) {
+							return false;
+						}
 					}
 				}
 

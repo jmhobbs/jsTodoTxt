@@ -15,6 +15,8 @@ const CONTEXTS = 'Work on @computer when @home';
 const PROJECT_REPORT = 'Create an outline for my +report';
 const PROJECT_SHED = 'Put siding on the +shed';
 const PROJECTS = 'Gather dimensions for my +report on my +shed build';
+const EXTENSION_BLUE = 'Paint room color:blue';
+const EXTENSION_RED = 'Paint room color:red';
 
 const lines = [
 	NOT_COMPLETE,
@@ -31,6 +33,8 @@ const lines = [
 	PROJECT_REPORT,
 	PROJECT_SHED,
 	PROJECTS,
+	EXTENSION_BLUE,
+	EXTENSION_RED,
 ];
 
 const linesIndex = Object.fromEntries(lines.map((v, i) => [v, i]));
@@ -44,7 +48,6 @@ function compare(
 	excluded: string[] | null = null
 ) {
 	const filtered = list.filter(filter);
-	//console.warn({filtered: filtered.map(itm => itm.item.toString())});
 	let expected: string[] = [];
 	if (included !== null) {
 		t.is(filtered.length, included.length);
@@ -207,4 +210,24 @@ test(
 	compare,
 	{ projectsOr: ['shed', 'report'], projectsNot: ['shed'] },
 	[PROJECT_REPORT]
+);
+
+test(
+	'filter › extensions › by key',
+	compare,
+	{
+		extensions: ['color'],
+	},
+	[EXTENSION_BLUE, EXTENSION_RED]
+);
+
+test(
+	'filter › extensions › by function',
+	compare,
+	{
+		extensions: (extensions: { key: string; value: string }[]): boolean => {
+			return extensions.filter(({ key, value }) => key === 'color' && value === 'blue').length > 0;
+		},
+	},
+	[EXTENSION_BLUE]
 );
