@@ -41,7 +41,11 @@ export class List {
 		} else {
 			lines = input;
 		}
-		this.#items = lines.map((line) => new Item(line.trimEnd()));
+
+		this.#items = lines
+			.map((line) => line.trimEnd())
+			.filter((line) => line.length > 0)
+			.map((line) => new Item(line.trimEnd()));
 	}
 
 	toString(): string {
