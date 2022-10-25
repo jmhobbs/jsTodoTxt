@@ -18,5 +18,5 @@ test('contexts', (t) => {
 
 test('extensions', (t) => {
 	const list = new List(['first item is due:2022-01-05', 'second item h:1', 'third h:0']);
-	t.deepEqual(list.extensions(), ['due', 'h']);
+	t.deepEqual(list.extensions(), { due: ['2022-01-05'], h: ['1', '0'] });
 });
