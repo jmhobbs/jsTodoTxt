@@ -1,0 +1,57 @@
+{
+  "name": "@jstodotxt/cli",
+  "version": "0.0.1",
+  "description": "A simple CLI for todo.txt. Compatible with todo.sh",
+  "keywords": ["todo.txt", "todo"],
+  "author": "John Hobbs <john@velvetcache.org>",
+  "license": "MIT",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/jmhobbs/jsTodoTxt.git",
+    "directory": "cli"
+  },
+  "main": "./dist/main.js",
+  "files": [
+    "./dist",
+    "!**/*.test.{js,d.ts}{,.map}"
+  ],
+  "bin": {
+    "todo": "dist/main.js"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc",
+    "lint": "run-s lint:*",
+    "lint:eslint": "eslint . --ext .ts",
+    "lint:format": "prettier --check 'src/**/*.ts'",
+    "prepare": "run-s test lint clean build",
+    "test": "c8 --reporter=lcov --reporter=text ava",
+    "dev:test": "ava --watch"
+  },
+  "devDependencies": {
+    "ava": "^5.0.1",
+    "c8": "^7.12.0",
+    "eslint": "^8.26.0",
+    "eslint-plugin-ava": "^13.2.0",
+    "jstodotxt": "file:..",
+    "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^9.4.1"
+  },
+  "ava": {
+    "files": [
+      "./src/**/*.test.ts"
+    ],
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
+  }
+}
