@@ -1,6 +1,6 @@
 {
 	"name": "jstodotxt",
-	"version": "1.0.0-alpha.1",
+	"version": "1.0.0-alpha.2",
 	"author": "John Hobbs <john@velvetcache.org>",
 	"description": "a library for working with todo.txt formatted files",
 	"license": "MIT",
