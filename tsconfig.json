@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"strict": true,
 		"incremental": true,
-		"target": "ES2018",
+		"target": "es2019",
 		"module": "commonjs",
 		"moduleResolution": "node",
 		"sourceMap": true,
