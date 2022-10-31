@@ -2,12 +2,15 @@
   "name": "@jstodotxt/cli",
   "version": "0.0.1",
   "description": "A simple CLI for todo.txt. Compatible with todo.sh",
-  "keywords": ["todo.txt", "todo"],
+  "keywords": [
+    "todo.txt",
+    "todo"
+  ],
   "author": "John Hobbs <john@velvetcache.org>",
   "license": "MIT",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/jmhobbs/jsTodoTxt.git",
+    "type": "git",
+    "url": "https://github.com/jmhobbs/jsTodoTxt.git",
     "directory": "cli"
   },
   "main": "./dist/main.js",
@@ -26,7 +29,8 @@
     "lint:format": "prettier --check 'src/**/*.ts'",
     "prepare": "run-s test lint clean build",
     "test": "c8 --reporter=lcov --reporter=text ava",
-    "dev:test": "ava --watch"
+    "dev:test": "ava --watch",
+    "todo": "tsx src/main.ts"
   },
   "devDependencies": {
     "ava": "^5.0.1",
@@ -36,7 +40,7 @@
     "jstodotxt": "file:..",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
-    "ts-node": "^10.9.1",
+    "tsx": "^3.11.0",
     "typescript": "^4.8.4"
   },
   "dependencies": {
@@ -51,7 +55,7 @@
       "ts"
     ],
     "require": [
-      "ts-node/register"
+      "@esbuild-kit/cjs-loader"
     ]
   }
 }
