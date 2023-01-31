@@ -1,7 +1,5 @@
 import { Item, Priority } from './Item';
 
-const rTrim = /[\r\n]*$/;
-
 export interface DateRange {
 	start?: Date;
 	end?: Date;
@@ -43,7 +41,7 @@ export class List {
 		} else {
 			lines = input;
 		}
-		this.#items = lines.map((line) => new Item(line.replace(rTrim, '')));
+		this.#items = lines.map((line) => new Item(line.trimEnd()));
 	}
 
 	toString(): string {
