@@ -51,8 +51,6 @@
 		"c8": "^7.12.0",
 		"eslint": "^8.26.0",
 		"eslint-plugin-ava": "^13.2.0",
-		"jsdoc": "^3.6.11",
-		"jsdoc-plugin-typescript": "^2.2.0",
 		"npm-run-all": "^4.1.5",
 		"prettier": "^2.7.1",
 		"rimraf": "^3.0.2",
