@@ -395,7 +395,7 @@ export class Item {
 	 * @param tag A valid context, without the `@`
 	 */
 	addContext(tag: string) {
-		if (this.#contexts.filter((v) => tag === v.tag).length === 0) {
+		if (!this.#contexts.some((v) => tag === v.tag)) {
 			this.#contexts.push({ tag, start: this.#body.length });
 			this.#body = [this.#body, `@${tag}`].join(' ');
 		}
@@ -434,7 +434,7 @@ export class Item {
 	 * @param tag A valid project, without the `+`
 	 */
 	addProject(tag: string) {
-		if (this.#projects.filter((v) => tag === v.tag).length === 0) {
+		if (!this.#projects.some((v) => tag === v.tag)) {
 			this.#projects.push({ tag, start: this.#body.length });
 			this.#body = [this.#body, `+${tag}`].join(' ');
 		}
