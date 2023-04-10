@@ -112,71 +112,45 @@ export class List {
 						if (null === input.body.exec(item.body())) {
 							return false;
 						}
-					} else {
-						if (input.body !== item.body()) {
-							return false;
-						}
+					} else if (input.body !== item.body()) {
+						return false;
 					}
 				}
 
 				const contexts = item.contexts();
 				if (input.contextsAnd !== undefined) {
-					if (
-						input.contextsAnd.filter((context) => {
-							return !contexts.includes(context);
-						}).length !== 0
-					) {
+					if (input.contextsAnd.some((context) => !contexts.includes(context))) {
 						return false;
 					}
 				}
 
 				if (input.contextsOr !== undefined) {
-					if (
-						input.contextsOr.filter((context) => {
-							return contexts.includes(context);
-						}).length === 0
-					) {
+					if (!input.contextsOr.some((context) => contexts.includes(context))) {
 						return false;
 					}
 				}
 
 				if (input.contextsNot !== undefined) {
-					if (
-						input.contextsNot.filter((context) => {
-							return contexts.includes(context);
-						}).length > 0
-					) {
+					if (input.contextsNot.some((context) => contexts.includes(context))) {
 						return false;
 					}
 				}
 
 				const projects = item.projects();
 				if (input.projectsAnd !== undefined) {
-					if (
-						input.projectsAnd.filter((context) => {
-							return !projects.includes(context);
-						}).length !== 0
-					) {
+					if (input.projectsAnd.some((context) => !projects.includes(context))) {
 						return false;
 					}
 				}
 
 				if (input.projectsOr !== undefined) {
-					if (
-						input.projectsOr.filter((context) => {
-							return projects.includes(context);
-						}).length === 0
-					) {
+					if (!input.projectsOr.some((context) => projects.includes(context))) {
 						return false;
 					}
 				}
 
 				if (input.projectsNot !== undefined) {
-					if (
-						input.projectsNot.filter((context) => {
-							return projects.includes(context);
-						}).length > 0
-					) {
+					if (input.projectsNot.some((context) => projects.includes(context))) {
 						return false;
 					}
 				}
@@ -186,13 +160,10 @@ export class List {
 						if (!input.extensions(item.extensions())) {
 							return false;
 						}
-					} else {
-						if (
-							item.extensions().filter(({ key }) => (<string[]>input.extensions).includes(key))
-								.length === 0
-						) {
-							return false;
-						}
+					} else if (
+						!item.extensions().some(({ key }) => (<string[]>input.extensions).includes(key))
+					) {
+						return false;
 					}
 				}
 
