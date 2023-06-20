@@ -25,7 +25,7 @@ The core of jsTodoTxt is the `Item` class.
 
 An `Item` breaks a single todo.txt line into two logical parts and treats them independently, what we call the header and the body.
 
-There are accessors and mutators for all parts of the item. API documentation is [available online](https://next--grand-bunny-8f4598.netlify.app/) and the package ships with type definition files.
+There are accessors and mutators for all parts of the item. API documentation is [available online](https://jstodotxt.velvetcache.org/) and the package ships with type definition files.
 
 ```text
         Header                                     Body
