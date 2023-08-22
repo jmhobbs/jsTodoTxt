@@ -43,42 +43,8 @@ interface TrackedTag {
 	start: number;
 }
 
-interface TrackedExtension {
-	key: string;
-	value: string;
-	start: number;
-}
-
 type TrackedContext = TrackedTag;
 type TrackedProject = TrackedTag;
-
-function parseBody(body: string) {
-	let start = 0;
-	const tags = (body.match(rTags) || []).map((tag): [string, number] => {
-		const tagStart = body.indexOf(tag, start);
-		if (tagStart != -1) {
-			start = tagStart + tag.length;
-		}
-		return [tag, tagStart];
-	});
-
-	const contexts: TrackedContext[] = [];
-	const projects: TrackedProject[] = [];
-	const extensions: TrackedExtension[] = [];
-
-	tags.forEach(([tag, start]) => {
-		if (tag[0] == '@') {
-			contexts.push({ tag: tag.slice(1), start });
-		} else if (tag[0] == '+') {
-			projects.push({ tag: tag.slice(1), start });
-		} else {
-			const split = tag.split(':', 2);
-			extensions.push({ key: split[0], value: split[1], start });
-		}
-	});
-
-	return { contexts, projects, extensions };
-}
 
 function dateFromString(input: string): Date {
 	if (null === rDate.exec(input)) {
@@ -99,10 +65,10 @@ export class Item {
 	#priority: Priority = null;
 	#created: Date | null = null;
 	#completed: Date | null = null;
-	#body = '';
+	#body: string[] = [];
 	#contexts: TrackedContext[] = [];
 	#projects: TrackedProject[] = [];
-	#extensions: TrackedExtension[] = [];
+	#extensions: Map<string, number[]> = new Map();
 
 	constructor(line: string) {
 		this.parse(line);
@@ -119,10 +85,10 @@ export class Item {
 		this.#priority = null;
 		this.#created = null;
 		this.#completed = null;
-		this.#body = '';
+		this.#body = [];
 		this.#contexts = [];
 		this.#projects = [];
-		this.#extensions = [];
+		this.#extensions = new Map();
 
 		// this can't _not_ match due to the .* at the end
 		const match = <RegExpExecArray>rTodo.exec(line);
@@ -149,7 +115,7 @@ export class Item {
 			this.#priority ? `(${this.#priority})` : '',
 			this.completedToString(),
 			this.createdToString(),
-			this.#body,
+			this.body(),
 		];
 
 		return parts.filter((v) => v !== null && v !== '').join(' ');
@@ -159,45 +125,45 @@ export class Item {
 	 * Generate the full todo.txt line of this Item, as well as spans describing the
 	 * location of all of it's component parts.
 	 */
-	toAnnotatedString(): AnnotatedItem {
-		const str = this.toString();
-		const headerLength = str.length - this.#body.length;
+	// toAnnotatedString(): AnnotatedItem {
+	// 	const str = this.toString();
+	// 	const headerLength = str.length - this.#body.length;
 
-		function tagRemap(prefix: string) {
-			return function (tag: TrackedTag): Tag {
-				const fullTag = [prefix, tag.tag].join('');
-				return {
-					string: fullTag,
-					span: {
-						start: tag.start + headerLength,
-						end: tag.start + headerLength + fullTag.length,
-					},
-				};
-			};
-		}
+	// 	function tagRemap(prefix: string) {
+	// 		return function (tag: TrackedTag): Tag {
+	// 			const fullTag = [prefix, tag.tag].join('');
+	// 			return {
+	// 				string: fullTag,
+	// 				span: {
+	// 					start: tag.start + headerLength,
+	// 					end: tag.start + headerLength + fullTag.length,
+	// 				},
+	// 			};
+	// 		};
+	// 	}
 
-		function extensionsRemap(ext: TrackedExtension): Extension {
-			const tag = `${ext.key}:${ext.value}`;
-			return {
-				string: tag,
-				parsed: {
-					key: ext.key,
-					value: ext.value,
-				},
-				span: {
-					start: ext.start + headerLength,
-					end: ext.start + headerLength + tag.length,
-				},
-			};
-		}
+	// 	function extensionsRemap(ext: TrackedExtension): Extension {
+	// 		const tag = `${ext.key}:${ext.value}`;
+	// 		return {
+	// 			string: tag,
+	// 			parsed: {
+	// 				key: ext.key,
+	// 				value: ext.value,
+	// 			},
+	// 			span: {
+	// 				start: ext.start + headerLength,
+	// 				end: ext.start + headerLength + tag.length,
+	// 			},
+	// 		};
+	// 	}
 
-		return {
-			string: str,
-			contexts: this.#contexts.map(tagRemap('@')),
-			projects: this.#projects.map(tagRemap('+')),
-			extensions: this.#extensions.map(extensionsRemap),
-		};
-	}
+	// 	return {
+	// 		string: str,
+	// 		contexts: this.#contexts.map(tagRemap('@')),
+	// 		projects: this.#projects.map(tagRemap('+')),
+	// 		extensions: [], // TODO this.#extensions.map(extensionsRemap)
+	// 	};
+	// }
 
 	/**
 	 * Is this task complete?
@@ -359,7 +325,7 @@ export class Item {
 	 * @returns The body portion of the task.
 	 */
 	body(): string {
-		return this.#body;
+		return this.#body.join(" ");
 	}
 
 	/**
@@ -369,14 +335,42 @@ export class Item {
 	 *
 	 * This will clear and re-load contexts, projects and extensions.
 	 *
-	 * @param body A todo.txt description string.
+	 * @param text A todo.txt description string.
 	 */
-	setBody(body: string) {
-		const { contexts, projects, extensions } = parseBody(body);
-		this.#body = body;
-		this.#contexts = contexts;
-		this.#projects = projects;
-		this.#extensions = extensions;
+	setBody(text: string) {
+		let start = 0;
+		const tags = (text.match(rTags) || []).map((tag): [string, number] => {
+			const tagStart = text.indexOf(tag, start);
+			if (tagStart != -1) {
+				start = tagStart + tag.length;
+			}
+			return [tag, tagStart];
+		});
+
+		this.#body = [];
+		this.#contexts = [];
+		this.#projects = [];
+		this.#extensions = new Map();
+
+		for (const str of text.split(" ")) {
+			if (str.match(rTags)) {
+				if (!(str.startsWith("@") || str.startsWith("+"))) {
+					const split = str.split(':', 2);
+					this.addExtension(split[0], split[1]);
+					continue;
+				}
+			}
+			this.#body.push(str);
+		}
+
+		// TODO refactor Project and Context to not use span logic
+		tags.forEach(([tag, start]) => {
+			if (tag[0] == '@') {
+				this.#contexts.push({ tag: tag.slice(1), start });
+			} else if (tag[0] == '+') {
+				this.#projects.push({ tag: tag.slice(1), start });
+			}
+		});
 	}
 
 	/**
@@ -397,7 +391,7 @@ export class Item {
 	addContext(tag: string) {
 		if (!this.#contexts.some((v) => tag === v.tag)) {
 			this.#contexts.push({ tag, start: this.#body.length });
-			this.#body = [this.#body, `@${tag}`].join(' ');
+			this.#body.push("@" + tag);
 		}
 	}
 
@@ -406,17 +400,11 @@ export class Item {
 	 *
 	 * @param tag A valid context, without the `@`
 	 */
-	removeContext(tag: string) {
-		const body = removeTag(this.#body, this.#contexts, tag);
-		if (body !== null) {
-			this.#body = body;
-
-			const { contexts, projects, extensions } = parseBody(this.#body);
-			this.#contexts = contexts;
-			this.#projects = projects;
-			this.#extensions = extensions;
-		}
-	}
+	// removeContext(tag: string) {
+	// 	const body = removeTag(this.#body, this.#contexts, tag);
+	// 	if (body !== null) {
+	// 		this.#body = body;
+	// }
 
 	/**
 	 * Get all of the project tags on the task.
@@ -436,7 +424,7 @@ export class Item {
 	addProject(tag: string) {
 		if (!this.#projects.some((v) => tag === v.tag)) {
 			this.#projects.push({ tag, start: this.#body.length });
-			this.#body = [this.#body, `+${tag}`].join(' ');
+			this.#body.push("+" + tag); 
 		}
 	}
 
@@ -445,81 +433,78 @@ export class Item {
 	 *
 	 * @param tag A valid project, without the `+`
 	 */
-	removeProject(tag: string) {
-		const body = removeTag(this.#body, this.#projects, tag);
-		if (body !== null) {
-			this.#body = body;
-
-			const { contexts, projects, extensions } = parseBody(this.#body);
-			this.#contexts = contexts;
-			this.#projects = projects;
-			this.#extensions = extensions;
-		}
-	}
+	// removeProject(tag: string) {
+	// 	const body = removeTag(this.#body, this.#projects, tag);
+	// 	if (body !== null) {
+	// 		this.#body = body;
+	// }
 
 	/**
-	 * Get all of the project tags on the task.
+	 * Get all of the extensions on the task.
 	 *
-	 * @returns Project tags, without the `+`
+	 * @returns Extensions iterator
 	 */
 	extensions() {
-		return this.#extensions.map(({ key, value }) => {
-			return { key, value };
-		});
+		return this.#extensions.entries();
 	}
 
 	setExtension(key: string, value: string) {
 		let found = false;
+		const str = key + ":" + value;
 
-		this.#extensions.forEach((ext) => {
-			if (ext.key === key) {
-				const prefix = this.#body.slice(0, ext.start);
-				const suffix = this.#body.slice(ext.start + ext.key.length + ext.value.length + 1);
-				if (found) {
-					this.#body = [
-						prefix.slice(0, prefix.length - 1), // take the extra space off the end of prefix
-						suffix,
-					].join('');
-				} else {
-					this.#body = [prefix, `${key}:${value}`, suffix].join('');
-				}
+		for (const [k, indices] of this.#extensions.entries()) {
+			if (key === k) {
+				indices.forEach(idx => {
+					this.#body[idx] = str;
+				});
 				found = true;
 			}
-		});
+		}
 
-		if (found) {
-			const { contexts, projects, extensions } = parseBody(this.#body);
-			this.#contexts = contexts;
-			this.#projects = projects;
-			this.#extensions = extensions;
-		} else {
+		if (!found) {
 			this.addExtension(key, value);
 		}
 	}
 
 	addExtension(key: string, value: string) {
-		this.#extensions.push({ key, value, start: this.#body.length });
-		this.#body = [this.#body, `${key}:${value}`].join(' ');
+		this.#body.push(key + ":" + value);
+		const indices = this.#extensions.get(key);
+		if (indices) {
+			indices.push(this.#body.length - 1);
+		} else {
+			this.#extensions.set(key, [this.#body.length - 1]);
+		}
 	}
 
-	removeExtension(key: string, value: string | null = null) {
-		const spans = this.#extensions
-			.filter((ext) => {
-				return ext.key === key && (value === null || ext.value === value);
-			})
-			.map((ext) => {
-				return { start: ext.start, end: ext.start + ext.key.length + ext.value.length + 1 };
-			})
-			.sort((a, b) => (a.start < b.start ? 1 : -1));
-
-		if (spans.length > 0) {
-			this.#body = cutOutSpans(this.#body, spans);
-
-			const { contexts, projects, extensions } = parseBody(this.#body);
-			this.#contexts = contexts;
-			this.#projects = projects;
-			this.#extensions = extensions;
+	removeExtension(key: string, value?: string, indices?: number[]) {
+		const idxs = this.#extensions.get(key);
+		if (!idxs) return;
+		for (const [i, idx] of idxs.entries()) {
+			if (
+				(!value && !indices)
+				|| (value && this.#body[idx] === value)
+				|| (indices && indices.findIndex(i => i === idx) > -1)
+			) {
+				// @ts-ignore Marking for deletion
+				this.#body[idx] = null;
+				// @ts-ignore Marking for deletion
+				idxs[i] = null;
+			}
 		}
+		this.#extensions.set(key, idxs.filter(o => o !== null));
+		if (!this.#extensions.get(key)?.length) {
+			this.#extensions.delete(key);
+		}
+		const newBody = this.#body.filter(o => o !== null);
+		if (newBody.length !== this.#body.length) {
+			this.setBody(newBody.join(" "));
+		}
+	}
+
+	getExtensions(key:string): { value: string, index: number }[] {
+		return this.#extensions.get(key)?.map(index => {
+			return { value: this.#body[index].split(":", 2)[1], index };
+		}) || [];
 	}
 }
 
@@ -538,25 +523,25 @@ function dateString(date: Date | null): string {
 	return '';
 }
 
-function cutOutSpans(body: string, spans: Span[]): string {
-	spans.forEach(({ start, end }) => {
-		body = [body.slice(0, start - 1), body.slice(end)].join('');
-	});
+// TODO function cutOutSpans(body: string, spans: Span[]): string {
+// 	spans.forEach(({ start, end }) => {
+// 		body = [body.slice(0, start - 1), body.slice(end)].join('');
+// 	});
 
-	return body;
-}
+// 	return body;
+// }
 
-function removeTag(body: string, tags: TrackedTag[], tag: string): string | null {
-	const spans = tags
-		.filter((ctx) => ctx.tag === tag)
-		.map((ctx) => {
-			return { start: ctx.start, end: ctx.start + ctx.tag.length + 1 };
-		})
-		.sort((a, b) => (a.start < b.start ? 1 : -1));
+// function removeTag(body: string, tags: TrackedTag[], tag: string): string | null {
+// 	const spans = tags
+// 		.filter((ctx) => ctx.tag === tag)
+// 		.map((ctx) => {
+// 			return { start: ctx.start, end: ctx.start + ctx.tag.length + 1 };
+// 		})
+// 		.sort((a, b) => (a.start < b.start ? 1 : -1));
 
-	if (spans.length === 0) {
-		return null;
-	}
+// 	if (spans.length === 0) {
+// 		return null;
+// 	}
 
-	return cutOutSpans(body, spans);
-}
+// 	return cutOutSpans(body, spans);
+// }
