@@ -9,6 +9,11 @@ test('projects › Deduplicates', (t) => {
 	t.deepEqual(item.projects(), ['goals', 'projects']);
 });
 
+test('projects › Does not parse context without a space', (t) => {
+	const item = new Item('A small computation: 1+1 = 2');
+	t.deepEqual(item.projects(), []);
+});
+
 test('addProject › Adds new projects', (t) => {
 	const item = new Item(sampleCompleted);
 	item.addProject('rewrite');

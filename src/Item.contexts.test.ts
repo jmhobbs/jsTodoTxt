@@ -9,6 +9,11 @@ test('contexts › Deduplicated', (t) => {
 	t.deepEqual(item.contexts(), ['home', 'work']);
 });
 
+test('contexts › Does not parse email as context', (t) => {
+	const item = new Item('My email is me@example.com , it is not a context');
+	t.deepEqual(item.contexts(), []);
+});
+
 test('addContext › Adds new contexts', (t) => {
 	const item = new Item(sampleCompleted);
 	item.addContext('computer');
