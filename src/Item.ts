@@ -1,6 +1,6 @@
 const rTodo =
 	/^((x) )?(\(([A-Z])\) )?(((\d{4}-\d{2}-\d{2}) (\d{4}-\d{2}-\d{2})|(\d{4}-\d{2}-\d{2})) )?(.*)$/;
-const rTags = /([^\s:]+:[^\s:]+|[+@]\S+)/g;
+const rTags = /\s([^\s:]+:[^\s:]+|[+@]\S+)/g;
 const rDate = /^\d{4}-\d{2}-\d{2}$/;
 
 // External types
@@ -54,13 +54,15 @@ type TrackedProject = TrackedTag;
 
 function parseBody(body: string) {
 	let start = 0;
-	const tags = (body.match(rTags) || []).map((tag): [string, number] => {
-		const tagStart = body.indexOf(tag, start);
-		if (tagStart != -1) {
-			start = tagStart + tag.length;
-		}
-		return [tag, tagStart];
-	});
+	const tags = (body.match(rTags) || [])
+		.map((tag) => tag.trimStart())
+		.map<[string, number]>((tag) => {
+			const tagStart = body.indexOf(tag, start);
+			if (tagStart != -1) {
+				start = tagStart + tag.length;
+			}
+			return [tag, tagStart];
+		});
 
 	const contexts: TrackedContext[] = [];
 	const projects: TrackedProject[] = [];
