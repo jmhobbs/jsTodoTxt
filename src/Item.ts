@@ -329,19 +329,15 @@ export class Item {
 	 *
 	 * @param date
 	 * @throws An Error when the date is provided as a string and is invalid.
-	 * @throws An Error when the created date is not set.
 	 */
 	setCompleted(date: Date | string | null = null) {
 		if (date === null) {
 			this.clearCompleted();
 		} else {
-			if (this.#created === null) {
-				throw new Error('Can not set completed date without a created date set.');
-			}
 			if (date instanceof Date) {
-				this.#completed = <Date | null>date;
+				this.#completed = date;
 			} else {
-				this.#completed = dateFromString(<string>date);
+				this.#completed = dateFromString(date);
 			}
 			this.#complete = true;
 		}
