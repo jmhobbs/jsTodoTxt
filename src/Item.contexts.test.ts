@@ -10,8 +10,13 @@ test('contexts › Deduplicated', (t) => {
 });
 
 test('contexts › Does not parse email as context', (t) => {
-	const item = new Item('My email is me@example.com , it is not a context');
+	const item = new Item('My email is me@example.com it is not a context');
 	t.deepEqual(item.contexts(), []);
+});
+
+test('contexts › Parses context at start of line', (t) => {
+	const item = new Item('@home wash the dishes');
+	t.deepEqual(item.contexts(), ['home']);
 });
 
 test('addContext › Adds new contexts', (t) => {
@@ -48,4 +53,11 @@ test('removeContext › Updates the body', (t) => {
 	const item = new Item('Hello @home and @work with +projects and @work extensions:todo');
 	item.removeContext('work');
 	t.is(item.body(), 'Hello @home and with +projects and extensions:todo');
+});
+
+test('contexts › Does not parse email addresses', (t) => {
+	const item = new Item(
+		'me@example.com Hello @home and name@example.com with +projects extensions:todo'
+	);
+	t.deepEqual(item.contexts(), ['home']);
 });

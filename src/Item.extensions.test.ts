@@ -1,6 +1,15 @@
 import test from 'ava';
 import { Item } from './Item';
 
+test('extensions › Reads extensions', (t) => {
+	const item = new Item('due:today Hello there extensions:todo and color:red');
+	t.deepEqual(item.extensions(), [
+		{ key: 'due', value: 'today' },
+		{ key: 'extensions', value: 'todo' },
+		{ key: 'color', value: 'red' },
+	]);
+});
+
 test('setExtension › Overwrites existing values', (t) => {
 	const item = new Item('Party like its due:2022-10-22');
 	item.setExtension('due', '1999-12-31');

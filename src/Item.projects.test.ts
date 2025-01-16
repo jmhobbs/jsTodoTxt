@@ -14,6 +14,11 @@ test('projects › Does not parse context without a space', (t) => {
 	t.deepEqual(item.projects(), []);
 });
 
+test('projects › Parses context at start of line', (t) => {
+	const item = new Item('+goals Do the thing');
+	t.deepEqual(item.projects(), ['goals']);
+});
+
 test('addProject › Adds new projects', (t) => {
 	const item = new Item(sampleCompleted);
 	item.addProject('rewrite');

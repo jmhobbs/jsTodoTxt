@@ -1,6 +1,10 @@
 const rTodo =
 	/^((x) )?(\(([A-Z])\) )?(((\d{4}-\d{2}-\d{2}) (\d{4}-\d{2}-\d{2})|(\d{4}-\d{2}-\d{2})) )?(.*)$/;
-const rTags = /\s([^\s:]+:[^\s:]+|[+@]\S+)/g;
+
+// A regex to match all tags (context, priority or extensions)
+const rTags = /(^|\s)([^\s:]+:[^\s:]+|[+@]\S+)/g;
+
+// A regex to match dates valid in the todo.txt spec
 const rDate = /^\d{4}-\d{2}-\d{2}$/;
 
 // External types
