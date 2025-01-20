@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 import { Command } from 'commander';
-import { readFileSync, writeFileSync } from 'fs';
-import { homedir } from 'os';
-import path from 'path';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { homedir } from 'node:os';
+import path from 'node:path';
 
 import { List } from 'jstodotxt';
 
