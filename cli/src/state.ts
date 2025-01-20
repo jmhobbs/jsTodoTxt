@@ -1,7 +1,7 @@
 import { List } from 'jstodotxt';
 
 import chalk from 'chalk';
-import { Writable } from 'stream';
+import { Writable } from 'node:stream';
 
 export interface Sink {
 	write(str: string): void;
