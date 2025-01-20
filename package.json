@@ -1,6 +1,6 @@
 {
   "name": "jstodotxt",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "author": "John Hobbs <john@velvetcache.org>",
   "description": "a library for working with todo.txt formatted files",
   "license": "MIT",
@@ -20,6 +20,10 @@
     {
       "name": "Kirill Goncharov",
       "url": "https://github.com/xuhcc"
+    },
+    {
+      "name": "Alexandre Rousseau",
+      "url": "https://github.com/madeindjs"
     }
   ],
   "repository": {
