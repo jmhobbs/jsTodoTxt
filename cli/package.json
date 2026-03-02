@@ -41,7 +41,7 @@
     "jstodotxt": "file:..",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
-    "tsx": "^3.11.0",
+    "tsx": "^4.21.0",
     "typescript": "^4.8.4"
   },
   "dependencies": {
@@ -56,7 +56,7 @@
       "ts"
     ],
     "require": [
-      "@esbuild-kit/cjs-loader"
-    ]
+			"tsx/cjs"
+		]
   }
 }
