@@ -11,7 +11,7 @@ test('setCompleted › Adding with Date', (t) => {
 	t.is(item.toString(), 'x 2022-07-01 2022-06-29 I have to do this.');
 });
 
-test('setCompleted › Set a task completed without a creating date ', (t) => {
+test('setCompleted › Set a task completed without a creating date', (t) => {
 	const item = new Item('I have to do this.');
 	const due = new Date(2022, 6, 1);
 	item.setCompleted(due);
