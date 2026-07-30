@@ -1,7 +1,7 @@
-import state from '../state';
-import Format from '../util/format';
-import { IndexedItem, IndexItems } from '../util/indexedItem';
-import Filter from '../util/filter';
+import state from '../state.js';
+import Format from '../util/format.js';
+import { IndexedItem, IndexItems } from '../util/indexedItem.js';
+import Filter from '../util/filter.js';
 
 export default function List(andFilters: string | string[]): void {
 	let indexedItems = IndexItems(state.todo.items());

@@ -1,5 +1,5 @@
 import test from 'ava';
-import { Item } from './Item';
+import { Item } from './Item.js';
 
 test('setComplete › Works marking complete', (t) => {
 	const item = new Item('I have to do this.');

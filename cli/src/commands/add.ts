@@ -1,5 +1,5 @@
-import state from '../state';
-import Format from '../util/format';
+import state from '../state.js';
+import Format from '../util/format.js';
 
 export default function Add(item: string): void {
 	const listItem = state.todo.add(item);

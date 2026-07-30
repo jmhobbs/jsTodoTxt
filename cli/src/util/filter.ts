@@ -1,4 +1,4 @@
-import { IndexedItem } from './indexedItem';
+import { IndexedItem } from './indexedItem.js';
 
 /**
  * Applies a filter string to a list of items, returning the items which satisfy the filter.

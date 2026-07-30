@@ -1,5 +1,5 @@
 import test from 'ava';
-import { List } from './List';
+import { List } from './List.js';
 
 test('constructor › string', (t) => {
 	const list = new List('first item\nsecond item');

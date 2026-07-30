@@ -6,7 +6,7 @@ import path from 'node:path';
 
 import { List } from 'jstodotxt';
 
-import state from './state';
+import state from './state.js';
 
 export function setup(program: Command) {
 	state.chalk = new chalk.Instance({ level: program.opts()['p'] ? 0 : 3 });

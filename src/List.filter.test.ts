@@ -1,5 +1,5 @@
 import test, { ExecutionContext } from 'ava';
-import { List, ListFilter } from './List';
+import { List, ListFilter } from './List.js';
 
 const NOT_COMPLETE = 'not complete';
 const COMPLETE = 'x complete';

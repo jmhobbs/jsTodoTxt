@@ -1,4 +1,4 @@
-import { Item, Priority } from './Item';
+import { Item, Priority } from './Item.js';
 
 export interface DateRange {
 	start?: Date;

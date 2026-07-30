@@ -1,5 +1,5 @@
 import test from 'ava';
-import { Item } from './Item';
+import { Item } from './Item.js';
 
 test('setCompleted › Adding with Date', (t) => {
 	const item = new Item('2022-06-29 I have to do this.');

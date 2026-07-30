@@ -2,10 +2,10 @@
 
 import { Command } from 'commander';
 
-import { setup, shutdown } from './hooks';
+import { setup, shutdown } from './hooks.js';
 
-import Add from './commands/add';
-import List from './commands/list';
+import Add from './commands/add.js';
+import List from './commands/list.js';
 
 const program = new Command();
 
