@@ -1,5 +1,5 @@
 import test from 'ava';
-import { Item } from './Item';
+import { Item } from './Item.js';
 
 test('setBody › Updates contexts, projects and extensions', (t) => {
 	const item = new Item('This is @before and +willDelete these tags:all');

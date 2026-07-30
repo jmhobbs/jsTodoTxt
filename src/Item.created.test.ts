@@ -1,5 +1,5 @@
 import test from 'ava';
-import { Item } from './Item';
+import { Item } from './Item.js';
 
 test('setCreated › Adding with Date', (t) => {
 	const item = new Item('I have to do this.');

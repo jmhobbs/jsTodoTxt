@@ -3,12 +3,14 @@
 		"strict": true,
 		"incremental": true,
 		"target": "ESNext",
-		"module": "commonjs",
-		"moduleResolution": "node",
+		"module": "nodenext",
+		"moduleResolution": "nodenext",
+		"types": ["node"],
 		"sourceMap": true,
 		"esModuleInterop": true,
 		"declaration": false,
 		"declarationMap": false,
+		"rootDir": "src",
 		"outDir": "dist"
 	},
 	"include": [

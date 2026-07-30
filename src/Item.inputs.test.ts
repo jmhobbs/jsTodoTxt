@@ -1,5 +1,5 @@
 import test, { ExecutionContext } from 'ava';
-import { Item } from './Item';
+import { Item } from './Item.js';
 
 interface Extension {
 	key: string;

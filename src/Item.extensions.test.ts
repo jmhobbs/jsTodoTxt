@@ -1,5 +1,5 @@
 import test from 'ava';
-import { Item } from './Item';
+import { Item } from './Item.js';
 
 test('extensions › Reads extensions', (t) => {
 	const item = new Item('due:today Hello there extensions:todo and color:red');

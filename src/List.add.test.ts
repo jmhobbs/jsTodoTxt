@@ -1,6 +1,6 @@
 import test from 'ava';
-import { List } from './List';
-import { Item } from './Item';
+import { List } from './List.js';
+import { Item } from './Item.js';
 
 test('add › string', (t) => {
 	const list = new List(['first item', 'second item', 'third item']);

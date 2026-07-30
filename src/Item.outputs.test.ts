@@ -1,5 +1,5 @@
 import test from 'ava';
-import { Item } from './Item';
+import { Item } from './Item.js';
 
 const sampleCompleted =
 	'x (Z) 2022-10-17 2022-09-03 We should keep +todoItems in their @place when rendering out due:2022-10-22';

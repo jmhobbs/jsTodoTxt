@@ -1,5 +1,5 @@
 import test from 'ava';
-import { List } from './List';
+import { List } from './List.js';
 
 test('toString', (t) => {
 	const list = new List(['first item', 'second item', 'third item']);

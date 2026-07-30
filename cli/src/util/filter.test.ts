@@ -1,8 +1,8 @@
 import test from 'ava';
 import { List } from 'jstodotxt';
 
-import Filter from './filter';
-import { IndexItems } from './indexedItem';
+import Filter from './filter.js';
+import { IndexItems } from './indexedItem.js';
 
 const BIRD = 'This has a bird';
 const FISH = 'This has a fish';
