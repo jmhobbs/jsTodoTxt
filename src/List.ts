@@ -62,29 +62,41 @@ export class List {
 	}
 
 	projects(): string[] {
-		return [
-			...new Set(this.#items.map((item) => item.projects()).reduce((p, n) => [...p, ...n], [])),
-		];
+		const projects = new Set<string>();
+
+		for (const item of this.#items) {
+			item.projects().forEach((p) => projects.add(p));
+		}
+
+		return [...projects];
 	}
 
 	contexts(): string[] {
-		return [
-			...new Set(this.#items.map((item) => item.contexts()).reduce((p, n) => [...p, ...n], [])),
-		];
+		const context = new Set<string>();
+
+		for (const item of this.#items) {
+			item.contexts().forEach((c) => context.add(c));
+		}
+
+		return [...context];
 	}
 
 	extensions(): KeysForExtensions {
-		const ret: KeysForExtensions = {};
+		const extensionsSets = this.#items
+			.flatMap((i) => i.extensions())
+			.reduce<Record<string, Set<string>>>((acc, { key, value }) => {
+				if (acc[key] === undefined) {
+					acc[key] = new Set([value]);
+				} else {
+					acc[key].add(value);
+				}
+				return acc;
+			}, {});
 
-		this.#items.forEach((item) => {
-			item.extensions().forEach((ext) => {
-				const values = ret[ext.key] || [];
-				values.push(ext.value);
-				ret[ext.key] = [...new Set(values)];
-			});
-		});
-
-		return ret;
+		return Object.entries(extensionsSets).reduce<KeysForExtensions>((acc, [key, value]) => {
+			acc[key] = [...value];
+			return acc;
+		}, {});
 	}
 
 	filter(input: ListFilter): ListItem[] {
